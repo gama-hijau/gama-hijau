@@ -1,0 +1,105 @@
+/* ============================================================
+   print.css — Mode Cetak / Simpan sebagai PDF (GaMa Hijau)
+   Dimuat dengan media="print".
+   Prinsip: hitam-putih hemat tinta, tanpa navigasi/dekorasi,
+   fokus konten. Accordion tips dibuka semua saat dicetak.
+   ============================================================ */
+
+* {
+  background: #fff !important;
+  color: #000 !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+body {
+  font-size: 12pt;
+  line-height: 1.5;
+  padding: 0;
+}
+
+/* Sembunyikan seluruh kerangka aplikasi & kontrol interaktif */
+.kepala,
+.nav-bawah,
+.loncat,
+.baris-aksi,
+.baris-chip,
+.tombol,
+.tombol-hapus,
+.tombol-bahaya,
+.tip-panah,
+.cek-langkah,
+.kartu-siklus,
+.strip-status,
+.daun-layang,
+.sambutan-pemandangan,
+.dialog,
+.tombol-profil,
+.kartu-zona-hapus,
+.kartu-izin,
+.form-jadwal,
+.jadwal-aksi,
+.keterangan-otomatis,
+#tombol-simpan,
+#tombol-segarkan,
+video, audio, iframe {
+  display: none !important;
+}
+
+/* Hanya halaman aktif yang tercetak */
+.view { display: none !important; }
+.view.aktif { display: block !important; }
+
+/* Kartu jadi blok bergaris tipis, hemat tinta */
+.kartu, .kartu-tip, .baris-hari, .item-jadwal {
+  border: 1pt solid #999 !important;
+  border-radius: 0 !important;
+  padding: 10pt !important;
+  margin-bottom: 8pt !important;
+  page-break-inside: avoid;
+}
+
+.kepala-halaman {
+  border: none !important;
+  border-bottom: 2pt solid #000 !important;
+  border-radius: 0 !important;
+  padding: 0 0 6pt !important;
+  margin-bottom: 12pt !important;
+}
+.kepala-halaman::after { display: none !important; }
+.kepala-halaman h2 { font-size: 18pt; }
+
+/* Buka semua accordion tips & detail hari saat dicetak */
+.tip-badan, .hari-detail { max-height: none !important; overflow: visible !important; }
+.tip-badan-isi { padding: 6pt 0 0 !important; }
+.tip-kepala { padding: 0 !important; min-height: 0 !important; }
+.tip-emoji { display: none !important; }
+
+/* Ilustrasi eco-enzyme tetap tampil (SVG garis, hemat tinta),
+   tapi dijadikan abu-abu */
+.langkah-gambar { filter: grayscale(1); max-width: 200pt; }
+
+/* Grafik batang karbon: beri garis tepi supaya tetap terbaca */
+.batang-luar { border: 1pt solid #666 !important; height: 10pt !important; }
+.batang-dalam { background: #999 !important; }
+
+.lencana-tingkat, .tip-tag, .jadwal-jenis, .lencana-hari, .sel-bulan {
+  border: 1pt solid #666 !important;
+}
+
+/* Strip kalender tanam: pola pengganti warna */
+.sel-bulan.b-tanam  { background: #ddd !important; font-weight: 900; }
+.sel-bulan.b-panen  { background: #f2f2f2 !important; text-decoration: underline; }
+
+a { text-decoration: none; }
+
+/* Jejak sumber di bagian bawah cetakan */
+#isi-utama::after {
+  content: "Dicetak dari aplikasi GaMa Hijau — KKN Tematik Perubahan Iklim, Kel. Galung Maloang, Parepare";
+  display: block;
+  margin-top: 14pt;
+  padding-top: 6pt;
+  border-top: 1pt solid #999;
+  font-size: 9pt;
+  color: #333 !important;
+}
