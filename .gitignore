@@ -2,7 +2,7 @@
 kalkulator-iklim-gm/
 
 # Cadangan logo resolusi asli — besar, tidak dipakai aplikasi
-icons/*-asli.png
+**/*-asli.png
 
 # Konfigurasi lokal Claude Code
 .claude/
