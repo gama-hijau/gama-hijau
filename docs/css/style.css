@@ -540,6 +540,27 @@ input:focus, select:focus, textarea:focus {
 }
 .hasil-utama.tingkat-sedang { border-top-color: var(--kuning-jagung); }
 .hasil-utama.tingkat-tinggi { border-top-color: #A34F2E; }
+
+.grup-toggle-durasi {
+  display: inline-flex; gap: 4px;
+  background: var(--kabut-pagi);
+  border-radius: 999px;
+  padding: 4px;
+  margin-bottom: 12px;
+}
+.toggle-durasi {
+  border: none; background: transparent;
+  padding: 8px 18px; min-height: 40px;
+  border-radius: 999px;
+  font-weight: 700; font-size: 0.88rem;
+  color: var(--teks-samar);
+}
+.toggle-durasi.aktif {
+  background: var(--hijau-jati); color: #fff;
+  font-weight: 800;
+}
+.toggle-durasi:active { transform: scale(0.96); }
+
 .angka-besar { font-size: 3rem; color: var(--hijau-jati); line-height: 1.1; }
 .satuan-besar { font-size: 1rem; color: var(--teks-samar); }
 .lencana-tingkat {

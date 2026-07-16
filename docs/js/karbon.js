@@ -26,6 +26,12 @@
   var wadahHasil = document.getElementById('hasil-karbon');
   var daftarRiwayat = document.getElementById('daftar-riwayat');
 
+  /* Mode tampilan hasil: 'hari' (BAWAAN — supaya orang langsung tahu
+     jejak hariannya tanpa mengira-ngira) atau 'bulan'. Ini cuma
+     mengubah tampilan; riwayat/lencana/laporan tetap memakai angka
+     bulanan asli yang dikembalikan hitung(), tidak berubah. */
+  var modeDurasi = 'hari';
+
   /* ---------- Penyimpanan riwayat ---------- */
   function ambilRiwayat() {
     try {
@@ -106,7 +112,11 @@
     return { kelas: 'tingkat-tinggi', label: '🔥 Tinggi — yuk mulai dikurangi' };
   }
 
+  var HARI_PER_BULAN = 30;   // sama dgn asumsi 30 hari/bulan yg sudah dipakai di hitung()
+
   function tampilkanHasil(hasil, gulirKeHasil) {
+    // Total & tingkat SELALU dihitung dari angka bulanan asli — riwayat,
+    // lencana, dan laporan dampak semuanya memakai basis bulanan yang sama.
     var total = Math.round(hasil.total);
     var tingkat = tingkatEmisi(total);
     var riwayat = ambilRiwayat();
@@ -114,30 +124,46 @@
 
     var pohonPerTahun = Math.max(1, Math.round(total * 12 / 21)); // 1 pohon ≈ 21 kg CO2/tahun
 
-    var teksBanding = 'Kira-kira setara emisi rata-rata warga Indonesia (± ' + RATA_RATA_NASIONAL + ' kg/bulan).';
+    /* ---- Angka yang ditampilkan mengikuti saklar bulan/hari ---- */
+    var harian = modeDurasi === 'hari';
+    var angkaUtama = harian ? (hasil.total / HARI_PER_BULAN) : total;
+    var teksAngkaUtama = harian ? angkaUtama.toFixed(1) : angkaUtama;
+    var satuanUtama = harian ? 'kg CO₂ per hari' : 'kg CO₂ per bulan';
+
+    // Pembanding rata-rata nasional & selisih riwayat: KLASIFIKASI selalu
+    // dari basis bulanan (lebih stabil), tapi ANGKA & SATUAN yang tertulis
+    // ikut mode aktif supaya tidak beda satuan dengan angka utama di atasnya.
+    var satuanSingkat = harian ? 'kg/hari' : 'kg/bulan';
+    var rataNasionalTampil = harian
+      ? (RATA_RATA_NASIONAL / HARI_PER_BULAN).toFixed(1)
+      : RATA_RATA_NASIONAL;
+
+    var teksBanding = 'Kira-kira setara emisi rata-rata warga Indonesia (± ' + rataNasionalTampil + ' ' + satuanSingkat + ').';
     if (total < RATA_RATA_NASIONAL * 0.8) {
-      teksBanding = 'Lebih rendah dari rata-rata warga Indonesia (± ' + RATA_RATA_NASIONAL + ' kg/bulan). Bagus sekali!';
+      teksBanding = 'Lebih rendah dari rata-rata warga Indonesia (± ' + rataNasionalTampil + ' ' + satuanSingkat + '). Bagus sekali!';
     } else if (total > RATA_RATA_NASIONAL * 1.2) {
-      teksBanding = 'Lebih tinggi dari rata-rata warga Indonesia (± ' + RATA_RATA_NASIONAL + ' kg/bulan).';
+      teksBanding = 'Lebih tinggi dari rata-rata warga Indonesia (± ' + rataNasionalTampil + ' ' + satuanSingkat + ').';
     }
 
     var teksPerubahan = '';
     if (sebelumnya !== null) {
       var selisih = total - sebelumnya;
+      var selisihTampil = harian ? (Math.abs(selisih) / HARI_PER_BULAN).toFixed(1) : Math.abs(selisih);
       if (selisih < -2) {
-        teksPerubahan = '<p class="banding-teks">📉 Turun <b>' + Math.abs(selisih) + ' kg</b> dari perhitungan sebelumnya. Hebat!</p>';
+        teksPerubahan = '<p class="banding-teks">📉 Turun <b>' + selisihTampil + ' kg' + (harian ? '/hari' : '') + '</b> dari perhitungan sebelumnya. Hebat!</p>';
       } else if (selisih > 2) {
-        teksPerubahan = '<p class="banding-teks">📈 Naik <b>' + selisih + ' kg</b> dari perhitungan sebelumnya.</p>';
+        teksPerubahan = '<p class="banding-teks">📈 Naik <b>' + selisihTampil + ' kg' + (harian ? '/hari' : '') + '</b> dari perhitungan sebelumnya.</p>';
       }
     }
 
     var totalUntukBatang = Math.max(hasil.total, 1);
     var barisBatang = Object.keys(hasil.rincian).map(function (k) {
-      var nilai = hasil.rincian[k];
-      var persen = Math.round(nilai / totalUntukBatang * 100);
+      var nilaiBulan = hasil.rincian[k];
+      var persen = Math.round(nilaiBulan / totalUntukBatang * 100); // rasio sama di kedua mode
+      var nilaiTampil = harian ? (nilaiBulan / HARI_PER_BULAN).toFixed(1) : Math.round(nilaiBulan);
       return (
         '<div class="batang-baris">' +
-          '<div class="batang-label"><span>' + NAMA_KATEGORI[k] + '</span><b>' + Math.round(nilai) + ' kg (' + persen + '%)</b></div>' +
+          '<div class="batang-label"><span>' + NAMA_KATEGORI[k] + '</span><b>' + nilaiTampil + ' kg (' + persen + '%)</b></div>' +
           '<div class="batang-luar"><div class="batang-dalam" style="width:' + persen + '%"></div></div>' +
         '</div>'
       );
@@ -149,9 +175,13 @@
 
     wadahHasil.innerHTML =
       '<div class="kartu hasil-utama ' + tingkat.kelas + '">' +
+        '<div class="grup-toggle-durasi" role="group" aria-label="Pilih satuan waktu">' +
+          '<button type="button" class="toggle-durasi' + (harian ? '' : ' aktif') + '" data-mode="bulan" aria-pressed="' + (!harian) + '">Per Bulan</button>' +
+          '<button type="button" class="toggle-durasi' + (harian ? ' aktif' : '') + '" data-mode="hari" aria-pressed="' + harian + '">Per Hari</button>' +
+        '</div>' +
         '<p>Perkiraan jejak karbon Anda</p>' +
-        '<div class="angka-besar">' + total + '</div>' +
-        '<div class="satuan-besar">kg CO₂ per bulan</div>' +
+        '<div class="angka-besar">' + teksAngkaUtama + '</div>' +
+        '<div class="satuan-besar">' + satuanUtama + '</div>' +
         '<span class="lencana-tingkat">' + tingkat.label + '</span>' +
         '<p class="banding-teks">' + teksBanding + '</p>' +
         '<p class="banding-teks">🌳 Perlu sekitar <b>' + pohonPerTahun + ' pohon</b> tumbuh setahun penuh untuk menyerap emisi ini.</p>' +
@@ -159,6 +189,7 @@
       '</div>' +
       '<div class="kartu">' +
         '<h3>Dari mana emisinya?</h3>' +
+        '<p class="keterangan" style="margin-bottom:4px">' + (harian ? 'Rincian per hari:' : 'Rincian per bulan:') + '</p>' +
         '<div class="batang-rincian">' + barisBatang + '</div>' +
       '</div>' +
       '<div class="kartu">' +
@@ -170,6 +201,14 @@
       wadahHasil.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
+
+  /* ---------- Saklar Per Bulan / Per Hari (tampilan saja) ---------- */
+  wadahHasil.addEventListener('click', function (e) {
+    var tombol = e.target.closest('.toggle-durasi');
+    if (!tombol) return;
+    modeDurasi = tombol.dataset.mode;
+    hitungLangsung();
+  });
 
   /* ---------- Riwayat ---------- */
   function gambarRiwayat() {
@@ -268,13 +307,19 @@
       '</button>';
     document.getElementById('tombol-bagikan-karbon').addEventListener('click', function () {
       var hasil = hitung();
-      var total = Math.round(hasil.total);
+      var harian = modeDurasi === 'hari';
+      var bagi = harian ? HARI_PER_BULAN : 1;
+      var satuan = harian ? 'per hari' : 'bulan ini';
+      function angka(n) {
+        var v = n / bagi;
+        return harian ? v.toFixed(1) : Math.round(v);
+      }
       var teks =
-        'Jejak karbon saya bulan ini kira-kira ' + total + ' kg CO₂.\n' +
-        'Rinciannya — perjalanan: ' + Math.round(hasil.rincian.transportasi) + ' kg, ' +
-        'listrik: ' + Math.round(hasil.rincian.listrik) + ' kg, ' +
-        'memasak: ' + Math.round(hasil.rincian.memasak) + ' kg, ' +
-        'makanan: ' + Math.round(hasil.rincian.makanan) + ' kg.\n' +
+        'Jejak karbon saya ' + satuan + ' kira-kira ' + angka(hasil.total) + ' kg CO₂.\n' +
+        'Rinciannya — perjalanan: ' + angka(hasil.rincian.transportasi) + ' kg, ' +
+        'listrik: ' + angka(hasil.rincian.listrik) + ' kg, ' +
+        'memasak: ' + angka(hasil.rincian.memasak) + ' kg, ' +
+        'makanan: ' + angka(hasil.rincian.makanan) + ' kg.\n' +
         'Yuk hitung juga punyamu di aplikasi GaMa Hijau!';
       window.GamaBagikan.bagikan('Jejak Karbon Saya', teks);
     });
