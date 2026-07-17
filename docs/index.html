@@ -285,34 +285,34 @@
     <!-- ====== KALKULATOR KARBON ====== -->
     <section id="view-karbon" class="view" aria-label="Kalkulator Jejak Karbon">
       <div class="kepala-halaman latar-hijau">
-        <p class="hero-eyebrow">Hitung emisi harianmu</p>
+        <p class="hero-eyebrow">Catat emisi hari ini</p>
         <h2>Kalkulator Jejak Karbon</h2>
-        <p>Isi kebiasaan sehari-hari, nanti dihitung perkiraan emisi CO₂ (gas penyebab pemanasan bumi) per bulan.</p>
+        <p>Isi kegiatan <b>hari ini</b> saja — simpan tiap hari, dan aplikasi merangkumnya jadi laporan bulanan yang jujur.</p>
       </div>
 
       <form id="form-karbon" class="form-karbon" novalidate>
 
         <fieldset class="kartu">
-          <legend><span class="nomor-langkah">1</span> Perjalanan sehari-hari</legend>
+          <legend><span class="nomor-langkah">1</span> Perjalanan hari ini</legend>
           <div class="baris-input">
-            <label for="in-motor">Naik motor, kira-kira berapa km sehari?</label>
+            <label for="in-motor">Naik motor, berapa km hari ini?</label>
             <div class="input-satuan">
               <input type="number" id="in-motor" min="0" max="500" step="1" value="0" inputmode="numeric">
-              <span>km/hari</span>
+              <span>km</span>
             </div>
           </div>
           <div class="baris-input">
-            <label for="in-mobil">Naik mobil pribadi, berapa km sehari?</label>
+            <label for="in-mobil">Naik mobil pribadi, berapa km hari ini?</label>
             <div class="input-satuan">
               <input type="number" id="in-mobil" min="0" max="500" step="1" value="0" inputmode="numeric">
-              <span>km/hari</span>
+              <span>km</span>
             </div>
           </div>
           <div class="baris-input">
-            <label for="in-umum">Naik angkutan umum / ojek, berapa km sehari?</label>
+            <label for="in-umum">Naik angkutan umum / ojek, berapa km hari ini?</label>
             <div class="input-satuan">
               <input type="number" id="in-umum" min="0" max="500" step="1" value="0" inputmode="numeric">
-              <span>km/hari</span>
+              <span>km</span>
             </div>
           </div>
           <button type="button" class="tombol tombol-kedua tombol-lebar tombol-kecil" data-tuju="lacak" style="margin-top:14px">
@@ -323,6 +323,7 @@
 
         <fieldset class="kartu" id="bagian-listrik">
           <legend><span class="nomor-langkah">2</span> Listrik di rumah</legend>
+          <small class="keterangan">Ini kebiasaan bulanan — porsi seharinya (dibagi 30) yang masuk hitungan hari ini.</small>
           <label class="pil-lewati">
             <input type="checkbox" id="lewati-listrik">
             <span class="cek-kotak" aria-hidden="true"></span>
@@ -346,6 +347,7 @@
 
         <fieldset class="kartu" id="bagian-masak">
           <legend><span class="nomor-langkah">3</span> Memasak</legend>
+          <small class="keterangan">Kebiasaan bulanan — porsi seharinya yang masuk hitungan hari ini.</small>
           <label class="pil-lewati">
             <input type="checkbox" id="lewati-masak">
             <span class="cek-kotak" aria-hidden="true"></span>
@@ -370,6 +372,7 @@
 
         <fieldset class="kartu" id="bagian-makan">
           <legend><span class="nomor-langkah">4</span> Pola makan</legend>
+          <small class="keterangan">Kebiasaan umum — porsi seharinya yang masuk hitungan hari ini.</small>
           <label class="pil-lewati">
             <input type="checkbox" id="lewati-makan">
             <span class="cek-kotak" aria-hidden="true"></span>
@@ -394,14 +397,16 @@
 
         <button type="submit" form="form-karbon" class="tombol tombol-utama tombol-lebar" id="tombol-simpan">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4 H16 L20 8 V19 A1 1 0 0 1 19 20 H5 A1 1 0 0 1 4 19 V5 A1 1 0 0 1 5 4 Z M8 4 V9 H15 V4 M7 20 V14 H17 V20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-          Simpan ke Riwayat
+          Simpan Catatan Hari Ini
         </button>
+        <p class="keterangan keterangan-tengah" style="margin-top:8px">Satu catatan per hari — kalau disimpan lagi di hari yang sama, catatan hari ini diperbarui.</p>
         <div id="aksi-karbon" class="baris-aksi" style="margin-top:12px"></div>
       </div>
 
       <div class="undak undak-c">
+        <div id="laporan-bulanan"></div>
         <div class="kartu" id="bagian-riwayat">
-          <h3>Riwayat perhitungan</h3>
+          <h3>Catatan harian bulan ini</h3>
           <p class="keterangan">Tersimpan di HP ini saja, tidak dikirim ke mana-mana.</p>
           <ul id="daftar-riwayat" class="daftar-riwayat"></ul>
         </div>

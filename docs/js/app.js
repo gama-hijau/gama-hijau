@@ -175,7 +175,10 @@
     var poin = 0;
     var kunci = window.GamaProfil.kunci;
     try {
-      poin += (JSON.parse(localStorage.getItem(kunci('riwayat_karbon'))) || []).length;
+      // catatan harian (model baru); data lama bulanan tetap dihargai
+      var catatanK = JSON.parse(localStorage.getItem(kunci('catatan_harian'))) || [];
+      var riwayatK = JSON.parse(localStorage.getItem(kunci('riwayat_karbon'))) || [];
+      poin += catatanK.length || riwayatK.length;
     } catch (e) { /* abaikan */ }
     try {
       var eco = JSON.parse(localStorage.getItem(kunci('progres_eco'))) || [];
@@ -255,7 +258,7 @@
         isi +=
           '<button type="button" class="kartu-mini" data-tuju="karbon">' +
             '<span class="kartu-mini-ikon">🍃</span>' +
-            '<span><small>Jejak karbon terakhir</small><b>' + riwayat[0].total + ' kg CO₂</b></span>' +
+            '<span><small>Perkiraan karbon sebulan</small><b>' + riwayat[0].total + ' kg CO₂</b></span>' +
           '</button>';
       }
     } catch (e) { /* abaikan */ }
@@ -350,6 +353,15 @@
 
   /* ---------- Registrasi Service Worker ---------- */
   if ('serviceWorker' in navigator) {
+    // Saat versi baru aplikasi selesai terunduh dan mengambil alih,
+    // muat ulang otomatis SEKALI — supaya pengguna tidak terjebak
+    // menatap tampilan lama dari simpanan offline.
+    var adaPengendaliSebelumnya = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener('controllerchange', function () {
+      if (adaPengendaliSebelumnya) location.reload();
+      adaPengendaliSebelumnya = true;
+    });
+
     window.addEventListener('load', function () {
       navigator.serviceWorker.register('sw.js').catch(function (err) {
         // Gagal daftar SW tidak boleh mengganggu aplikasi

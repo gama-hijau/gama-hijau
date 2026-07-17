@@ -549,6 +549,36 @@ input:focus, select:focus, textarea:focus {
 .hasil-utama.tingkat-sedang { border-top-color: var(--kuning-jagung); }
 .hasil-utama.tingkat-tinggi { border-top-color: #A34F2E; }
 
+/* Kartu Laporan Bulanan (rangkuman catatan harian) */
+.kartu-laporan { border-left: 6px solid var(--kuning-jagung); }
+.laporan-baris-atas {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin: 4px 0 8px;
+}
+.laporan-hari { font-size: 0.9rem; color: var(--teks-samar); font-weight: 700; }
+.laporan-hari b { color: var(--hijau-jati); font-family: var(--font-judul); font-size: 1.15rem; }
+.statistik-laporan {
+  list-style: none;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+  margin: 12px 0 10px;
+}
+.statistik-laporan li {
+  background: var(--kabut-pagi);
+  border: 1px solid var(--garis);
+  border-radius: var(--radius-kecil);
+  padding: 9px 6px; text-align: center;
+}
+.statistik-laporan b {
+  display: block;
+  font-family: var(--font-judul); font-size: 1.25rem; color: var(--hijau-jati);
+  font-variant-numeric: tabular-nums;
+}
+.statistik-laporan small { font-size: 0.7rem; color: var(--teks-samar); line-height: 1.2; display: block; }
+.laporan-sub {
+  margin: 16px 0 4px;
+  font-size: 0.95rem; color: var(--tanah-basah);
+}
+
 /* Saklar "Tidak diisi" per bagian kalkulator */
 .pil-lewati {
   display: flex; align-items: center; gap: 10px;

@@ -32,12 +32,14 @@
     window.GamaProfil.daftar().forEach(function (p) {
       var id = p.id;
       var riwayat = bacaUntuk(id, 'riwayat_karbon', []);
+      var catatan = bacaUntuk(id, 'catatan_harian', []);
       var jadwal = bacaUntuk(id, 'jadwal', []);
       var eco = bacaUntuk(id, 'progres_eco', []);
       var ecoSelesai = 0;
       eco.forEach(function (x) { if (x) ecoSelesai++; });
 
-      hasil.perhitungan += riwayat.length;
+      // model baru: catatan per hari; data lama bulanan tetap dihitung
+      hasil.perhitungan += (catatan.length || riwayat.length);
       hasil.jadwal += jadwal.length;
       hasil.langkahEco += ecoSelesai;
       if (riwayat.length || jadwal.length || ecoSelesai) hasil.profilAktifData++;
@@ -52,7 +54,7 @@
       hasil.turun += turunProfil;
 
       hasil.perProfil.push({
-        nama: p.nama, perhitungan: riwayat.length, jadwal: jadwal.length,
+        nama: p.nama, perhitungan: (catatan.length || riwayat.length), jadwal: jadwal.length,
         eco: ecoSelesai, turun: turunProfil
       });
     });
@@ -74,14 +76,14 @@
     baris.push('CO2 dihindari (akumulasi penurunan jejak karbon): ' + Math.round(d.turun) + ' kg/bulan' +
       (pohon > 0 ? ' (setara kerja ' + pohon + ' pohon/tahun)' : ''));
     baris.push('Total kegiatan tercatat: ' + totalKegiatan);
-    baris.push('  - Perhitungan jejak karbon: ' + d.perhitungan);
+    baris.push('  - Catatan jejak karbon (hari): ' + d.perhitungan);
     baris.push('  - Jadwal tani diisi: ' + d.jadwal);
     baris.push('  - Langkah eco-enzyme diselesaikan: ' + d.langkahEco);
     baris.push('Jumlah profil (pengguna) di perangkat ini: ' + d.profil + ' (' + d.profilAktifData + ' aktif mengisi data)');
     baris.push('');
     baris.push('Rincian per profil:');
     d.perProfil.forEach(function (p) {
-      baris.push('  - ' + p.nama + ': ' + p.perhitungan + ' perhitungan, ' + p.jadwal + ' jadwal, ' +
+      baris.push('  - ' + p.nama + ': ' + p.perhitungan + ' hari tercatat, ' + p.jadwal + ' jadwal, ' +
         p.eco + ' langkah eco-enzyme' + (p.turun > 0 ? ', turun ' + Math.round(p.turun) + ' kg/bulan' : ''));
     });
     baris.push('');
@@ -148,7 +150,7 @@
         isiUtama +
         (totalKegiatan > 0
           ? '<ul class="statistik-dampak">' +
-              '<li><b>' + d.perhitungan + '</b><small>perhitungan karbon</small></li>' +
+              '<li><b>' + d.perhitungan + '</b><small>catatan karbon</small></li>' +
               '<li><b>' + d.jadwal + '</b><small>jadwal tani</small></li>' +
               '<li><b>' + d.langkahEco + '</b><small>langkah eco-enzyme</small></li>' +
               '<li><b>' + d.profil + '</b><small>profil di HP ini</small></li>' +

@@ -16,7 +16,8 @@
 
   /* ---------- Data profil aktif untuk pengecekan ---------- */
   function dataProfil() {
-    var riwayat = baca('riwayat_karbon', []);
+    var riwayat = baca('riwayat_karbon', []);          // rangkuman bulanan
+    var catatan = baca('catatan_harian', []);          // catatan per hari (model baru)
     var eco = baca('progres_eco', []);
     var jadwal = baca('jadwal', []);
     var ecoSelesai = 0;
@@ -25,12 +26,17 @@
     var hariJadwal = {};
     jadwal.forEach(function (j) { hariJadwal[String(j.waktu).slice(0, 10)] = true; });
 
+    // pengguna lama (pra-catatan-harian) tetap dihargai lewat riwayat
+    var hitunganKarbon = catatan.length || riwayat.length;
+
     return {
       riwayat: riwayat,
+      catatan: catatan,
+      hitunganKarbon: hitunganKarbon,
       ecoSelesai: ecoSelesai,
       jadwal: jadwal,
       hariJadwal: Object.keys(hariJadwal).length,
-      poin: riwayat.length + ecoSelesai + jadwal.length
+      poin: hitunganKarbon + ecoSelesai + jadwal.length
     };
   }
 
@@ -46,8 +52,8 @@
   var LENCANA = [
     {
       id: 'tunas', ikon: 'tunas', nama: 'Tunas Pertama',
-      desk: 'Menyimpan perhitungan jejak karbon pertama',
-      cek: function (d) { return d.riwayat.length >= 1; }
+      desk: 'Menyimpan catatan jejak karbon pertama',
+      cek: function (d) { return d.hitunganKarbon >= 1; }
     },
     {
       id: 'petani7', ikon: 'kalender', nama: 'Petani Rajin',

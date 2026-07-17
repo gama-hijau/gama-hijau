@@ -1,5 +1,5 @@
 /* ============================================================
-   karbon.js — Kalkulator Jejak Karbon
+   karbon.js — Kalkulator Jejak Karbon (model CATATAN HARIAN)
    Faktor emisi (perkiraan, sumber umum: IPCC & faktor grid Indonesia):
    - Motor            : 0.08 kg CO2 / km
    - Mobil pribadi    : 0.19 kg CO2 / km
@@ -8,43 +8,84 @@
    - LPG 3 kg         : ~9 kg CO2 / tabung (3 kg x 2.98)
    - Kayu bakar       : nilai bulanan langsung dari pilihan frekuensi
    - Pola makan       : nilai bulanan langsung dari pilihan
-   Hasil disimpan di localStorage — tidak butuh internet sama sekali.
+
+   Cara kerja (mengikuti kebiasaan nyata warga):
+   - Perjalanan diisi UNTUK HARI INI saja — tidak digeneralisasi
+     sebulan. Hari ini 150 km mobil, besok 1 km motor? Catat saja
+     tiap hari; angkanya tidak saling menimpa.
+   - Listrik/memasak/pola makan adalah kebiasaan bulanan; yang masuk
+     hitungan hari ini adalah PORSI seharinya (dibagi 30).
+   - "Simpan Catatan Hari Ini" menyimpan SATU catatan per tanggal
+     (menyimpan ulang di hari yang sama = memperbarui).
+   - Catatan harian sebulan dirangkum jadi LAPORAN BULANAN: hari
+     tercatat, total, rata-rata/hari, dan perkiraan sebulan penuh
+     (rata-rata × jumlah hari bulan itu).
+   - riwayat_karbon berisi SATU entri per bulan (total = perkiraan
+     sebulan penuh) — dipakai fitur Dampak Bersama & Lencana.
+   Semua di localStorage — tidak butuh internet sama sekali.
    ============================================================ */
 (function () {
   'use strict';
 
-  var KUNCI_RIWAYAT = window.GamaProfil.kunci('riwayat_karbon');   // terpisah per profil
-  var RATA_RATA_NASIONAL = 290; // kg CO2/bulan per orang (perkiraan kasar)
+  var KUNCI_RIWAYAT = window.GamaProfil.kunci('riwayat_karbon');   // rangkuman bulanan, per profil
+  var KUNCI_HARIAN = window.GamaProfil.kunci('catatan_harian');    // catatan per hari, per profil
+  var RATA_RATA_NASIONAL = 290;   // kg CO2/bulan per orang (perkiraan kasar)
+  var HARI_PER_BULAN = 30;        // pembagi porsi harian kebiasaan bulanan
+  var MAKS_CATATAN = 90;          // simpan ± 3 bulan catatan harian
+  var MAKS_BULAN = 24;            // simpan maks 24 rangkuman bulanan
 
-  /* Faktor emisi transportasi (kg CO2/km) — nilai TERKUNCI, kini
-     dijadikan satu sumber supaya dipakai bersama oleh kalkulator
-     ini dan pelacak GPS (js/lacak.js). Jangan ubah tanpa izin. */
+  /* Faktor emisi transportasi (kg CO2/km) — nilai TERKUNCI, satu
+     sumber bersama kalkulator ini dan pelacak GPS (js/lacak.js). */
   var FAKTOR_TRANSPORT = { motor: 0.08, mobil: 0.19, umum: 0.05 };
   window.GamaKarbon = { FAKTOR: FAKTOR_TRANSPORT };
 
   var form = document.getElementById('form-karbon');
   var wadahHasil = document.getElementById('hasil-karbon');
   var daftarRiwayat = document.getElementById('daftar-riwayat');
+  var wadahLaporan = document.getElementById('laporan-bulanan');
 
-  /* Mode tampilan hasil: 'hari' (BAWAAN — supaya orang langsung tahu
-     jejak hariannya tanpa mengira-ngira) atau 'bulan'. Ini cuma
-     mengubah tampilan; riwayat/lencana/laporan tetap memakai angka
-     bulanan asli yang dikembalikan hitung(), tidak berubah. */
-  var modeDurasi = 'hari';
+  var NAMA_BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
-  /* ---------- Penyimpanan riwayat ---------- */
+  /* ---------- Tanggal lokal ---------- */
+  function tglHariIni() {
+    var d = new Date();
+    return d.getFullYear() + '-' +
+      String(d.getMonth() + 1).padStart(2, '0') + '-' +
+      String(d.getDate()).padStart(2, '0');
+  }
+  function bulanDariTgl(tgl) { return String(tgl).slice(0, 7); }             // 'YYYY-MM'
+  function bulanDariTs(ts) { return bulanDariTgl(new Date(ts).getFullYear() + '-' +
+    String(new Date(ts).getMonth() + 1).padStart(2, '0') + '-01'); }
+  function namaBulan(kunciBulan) {
+    var b = parseInt(kunciBulan.slice(5, 7), 10) - 1;
+    return (NAMA_BULAN[b] || '') + ' ' + kunciBulan.slice(0, 4);
+  }
+  function jumlahHariBulan(kunciBulan) {
+    var t = parseInt(kunciBulan.slice(0, 4), 10);
+    var b = parseInt(kunciBulan.slice(5, 7), 10);
+    return new Date(t, b, 0).getDate();
+  }
+
+  /* ---------- Penyimpanan ---------- */
+  function ambilCatatan() {
+    try { return JSON.parse(localStorage.getItem(KUNCI_HARIAN)) || []; }
+    catch (e) { return []; }
+  }
+  function simpanCatatan(c) {
+    try { localStorage.setItem(KUNCI_HARIAN, JSON.stringify(c)); }
+    catch (e) { /* penyimpanan penuh — abaikan */ }
+  }
   function ambilRiwayat() {
-    try {
-      return JSON.parse(localStorage.getItem(KUNCI_RIWAYAT)) || [];
-    } catch (e) { return []; }
+    try { return JSON.parse(localStorage.getItem(KUNCI_RIWAYAT)) || []; }
+    catch (e) { return []; }
   }
   function simpanRiwayat(riwayat) {
-    try {
-      localStorage.setItem(KUNCI_RIWAYAT, JSON.stringify(riwayat));
-    } catch (e) { /* penyimpanan penuh — abaikan */ }
+    try { localStorage.setItem(KUNCI_RIWAYAT, JSON.stringify(riwayat)); }
+    catch (e) { /* penyimpanan penuh — abaikan */ }
   }
 
-  /* ---------- Perhitungan ---------- */
+  /* ---------- Perhitungan (HARIAN) ---------- */
   function nilaiRadio(nama) {
     var pilihan = form.querySelector('input[name="' + nama + '"]:checked');
     return pilihan ? parseFloat(pilihan.value) : 0;
@@ -66,11 +107,13 @@
       makanan: document.getElementById('lewati-makan').checked
     };
 
+    // Transportasi = km yang benar-benar ditempuh HARI INI.
+    // Kebiasaan bulanan (listrik/masak/makan) diambil porsi hariannya.
     var rincian = {
-      transportasi: (motor * FAKTOR_TRANSPORT.motor + mobil * FAKTOR_TRANSPORT.mobil + umum * FAKTOR_TRANSPORT.umum) * 30,
-      listrik: dilewati.listrik ? 0 : kwh * 0.85,
-      memasak: dilewati.memasak ? 0 : (lpg * 9 + nilaiRadio('in-kayu')),
-      makanan: dilewati.makanan ? 0 : nilaiRadio('in-makan')
+      transportasi: motor * FAKTOR_TRANSPORT.motor + mobil * FAKTOR_TRANSPORT.mobil + umum * FAKTOR_TRANSPORT.umum,
+      listrik: dilewati.listrik ? 0 : (kwh * 0.85) / HARI_PER_BULAN,
+      memasak: dilewati.memasak ? 0 : (lpg * 9 + nilaiRadio('in-kayu')) / HARI_PER_BULAN,
+      makanan: dilewati.makanan ? 0 : nilaiRadio('in-makan') / HARI_PER_BULAN
     };
     var total = rincian.transportasi + rincian.listrik + rincian.memasak + rincian.makanan;
     return { total: total, rincian: rincian, dilewati: dilewati };
@@ -104,7 +147,6 @@
   };
 
   function buatSaran(rincian) {
-    // Urutkan kategori dari penyumbang terbesar, ambil saran dua teratas
     var urut = Object.keys(rincian).sort(function (a, b) {
       return rincian[b] - rincian[a];
     });
@@ -114,72 +156,54 @@
     return hasil;
   }
 
-  /* ---------- Tampilan hasil ---------- */
-  function tingkatEmisi(total) {
-    if (total < 150) return { kelas: '', label: '🌿 Rendah — pertahankan!' };
-    if (total < 300) return { kelas: 'tingkat-sedang', label: '🌤 Sedang — masih bisa dikurangi' };
+  /* ---------- Tampilan hasil hari ini ---------- */
+  function tingkatEmisiHarian(totalHarian) {
+    // padanan harian dari ambang bulanan lama (150/300 kg per bulan)
+    if (totalHarian < 5) return { kelas: '', label: '🌿 Rendah — pertahankan!' };
+    if (totalHarian < 10) return { kelas: 'tingkat-sedang', label: '🌤 Sedang — masih bisa dikurangi' };
     return { kelas: 'tingkat-tinggi', label: '🔥 Tinggi — yuk mulai dikurangi' };
   }
 
-  var HARI_PER_BULAN = 30;   // sama dgn asumsi 30 hari/bulan yg sudah dipakai di hitung()
-
   function tampilkanHasil(hasil, gulirKeHasil) {
-    // Total & tingkat SELALU dihitung dari angka bulanan asli — riwayat,
-    // lencana, dan laporan dampak semuanya memakai basis bulanan yang sama.
-    var total = Math.round(hasil.total);
-    var tingkat = tingkatEmisi(total);
-    var riwayat = ambilRiwayat();
-    var sebelumnya = riwayat.length ? riwayat[0].total : null;
-
-    var pohonPerTahun = Math.max(1, Math.round(total * 12 / 21)); // 1 pohon ≈ 21 kg CO2/tahun
-
-    /* ---- Angka yang ditampilkan mengikuti saklar bulan/hari ---- */
-    var harian = modeDurasi === 'hari';
-    var angkaUtama = harian ? (hasil.total / HARI_PER_BULAN) : total;
-    var teksAngkaUtama = harian ? angkaUtama.toFixed(1) : angkaUtama;
-    var satuanUtama = harian ? 'kg CO₂ per hari' : 'kg CO₂ per bulan';
-
-    // Pembanding rata-rata nasional & selisih riwayat: KLASIFIKASI selalu
-    // dari basis bulanan (lebih stabil), tapi ANGKA & SATUAN yang tertulis
-    // ikut mode aktif supaya tidak beda satuan dengan angka utama di atasnya.
-    var satuanSingkat = harian ? 'kg/hari' : 'kg/bulan';
-    var rataNasionalTampil = harian
-      ? (RATA_RATA_NASIONAL / HARI_PER_BULAN).toFixed(1)
-      : RATA_RATA_NASIONAL;
+    var tingkat = tingkatEmisiHarian(hasil.total);
 
     var adaLewat = hasil.dilewati &&
       (hasil.dilewati.listrik || hasil.dilewati.memasak || hasil.dilewati.makanan);
 
-    var teksBanding = 'Kira-kira setara emisi rata-rata warga Indonesia (± ' + rataNasionalTampil + ' ' + satuanSingkat + ').';
-    if (total < RATA_RATA_NASIONAL * 0.8) {
-      teksBanding = 'Lebih rendah dari rata-rata warga Indonesia (± ' + rataNasionalTampil + ' ' + satuanSingkat + '). Bagus sekali!';
-    } else if (total > RATA_RATA_NASIONAL * 1.2) {
-      teksBanding = 'Lebih tinggi dari rata-rata warga Indonesia (± ' + rataNasionalTampil + ' ' + satuanSingkat + ').';
+    var rataNasionalHarian = (RATA_RATA_NASIONAL / HARI_PER_BULAN).toFixed(1);
+    var teksBanding = 'Kira-kira setara emisi harian rata-rata warga Indonesia (± ' + rataNasionalHarian + ' kg/hari).';
+    if (hasil.total < (RATA_RATA_NASIONAL / HARI_PER_BULAN) * 0.8) {
+      teksBanding = 'Lebih rendah dari rata-rata harian warga Indonesia (± ' + rataNasionalHarian + ' kg/hari). Bagus sekali!';
+    } else if (hasil.total > (RATA_RATA_NASIONAL / HARI_PER_BULAN) * 1.2) {
+      teksBanding = 'Lebih tinggi dari rata-rata harian warga Indonesia (± ' + rataNasionalHarian + ' kg/hari).';
     }
     if (adaLewat) {
-      // membandingkan angka yang tidak lengkap dengan rata-rata nasional
-      // akan menyesatkan — ganti dengan catatan jujur
       teksBanding = 'Ada bagian yang tidak diisi, jadi ini <b>belum</b> jejak karbon lengkap Anda — hanya dari bagian yang dihitung.';
     }
 
+    // dibandingkan catatan KEMARIN (kalau ada)
     var teksPerubahan = '';
-    if (sebelumnya !== null) {
-      var selisih = total - sebelumnya;
-      var selisihTampil = harian ? (Math.abs(selisih) / HARI_PER_BULAN).toFixed(1) : Math.abs(selisih);
-      if (selisih < -2) {
-        teksPerubahan = '<p class="banding-teks">📉 Turun <b>' + selisihTampil + ' kg' + (harian ? '/hari' : '') + '</b> dari perhitungan sebelumnya. Hebat!</p>';
-      } else if (selisih > 2) {
-        teksPerubahan = '<p class="banding-teks">📈 Naik <b>' + selisihTampil + ' kg' + (harian ? '/hari' : '') + '</b> dari perhitungan sebelumnya.</p>';
+    var kemarin = new Date(); kemarin.setDate(kemarin.getDate() - 1);
+    var tglKemarin = kemarin.getFullYear() + '-' +
+      String(kemarin.getMonth() + 1).padStart(2, '0') + '-' +
+      String(kemarin.getDate()).padStart(2, '0');
+    var catatanKemarin = null;
+    ambilCatatan().forEach(function (c) { if (c.tgl === tglKemarin) catatanKemarin = c; });
+    if (catatanKemarin) {
+      var selisih = hasil.total - catatanKemarin.total;
+      if (selisih < -0.2) {
+        teksPerubahan = '<p class="banding-teks">📉 Turun <b>' + Math.abs(selisih).toFixed(1) + ' kg</b> dibanding kemarin. Hebat!</p>';
+      } else if (selisih > 0.2) {
+        teksPerubahan = '<p class="banding-teks">📈 Naik <b>' + selisih.toFixed(1) + ' kg</b> dibanding kemarin.</p>';
       }
     }
 
-    var totalUntukBatang = Math.max(hasil.total, 1);
+    var totalUntukBatang = Math.max(hasil.total, 0.001);
     var barisBatang = Object.keys(hasil.rincian).map(function (k) {
       var lewatiIni = hasil.dilewati && hasil.dilewati[k];
-      var nilaiBulan = hasil.rincian[k];
-      var persen = lewatiIni ? 0 : Math.round(nilaiBulan / totalUntukBatang * 100); // rasio sama di kedua mode
-      var nilaiTampil = harian ? (nilaiBulan / HARI_PER_BULAN).toFixed(1) : Math.round(nilaiBulan);
-      var teksNilai = lewatiIni ? 'tidak diisi' : (nilaiTampil + ' kg (' + persen + '%)');
+      var nilai = hasil.rincian[k];
+      var persen = lewatiIni ? 0 : Math.round(nilai / totalUntukBatang * 100);
+      var teksNilai = lewatiIni ? 'tidak diisi' : (nilai.toFixed(1) + ' kg (' + persen + '%)');
       return (
         '<div class="batang-baris' + (lewatiIni ? ' batang-lewati' : '') + '">' +
           '<div class="batang-label"><span>' + NAMA_KATEGORI[k] + '</span><b>' + teksNilai + '</b></div>' +
@@ -194,21 +218,16 @@
 
     wadahHasil.innerHTML =
       '<div class="kartu hasil-utama ' + tingkat.kelas + '">' +
-        '<div class="grup-toggle-durasi" role="group" aria-label="Pilih satuan waktu">' +
-          '<button type="button" class="toggle-durasi' + (harian ? '' : ' aktif') + '" data-mode="bulan" aria-pressed="' + (!harian) + '">Per Bulan</button>' +
-          '<button type="button" class="toggle-durasi' + (harian ? ' aktif' : '') + '" data-mode="hari" aria-pressed="' + harian + '">Per Hari</button>' +
-        '</div>' +
-        '<p>Perkiraan jejak karbon Anda</p>' +
-        '<div class="angka-besar">' + teksAngkaUtama + '</div>' +
-        '<div class="satuan-besar">' + satuanUtama + '</div>' +
+        '<p>Emisi Anda <b>hari ini</b> (' + window.formatTanggal(new Date()) + ')</p>' +
+        '<div class="angka-besar">' + hasil.total.toFixed(1) + '</div>' +
+        '<div class="satuan-besar">kg CO₂ hari ini</div>' +
         '<span class="lencana-tingkat">' + tingkat.label + '</span>' +
         '<p class="banding-teks">' + teksBanding + '</p>' +
-        '<p class="banding-teks">🌳 Perlu sekitar <b>' + pohonPerTahun + ' pohon</b> tumbuh setahun penuh untuk menyerap emisi ini.</p>' +
         teksPerubahan +
       '</div>' +
       '<div class="kartu">' +
         '<h3>Dari mana emisinya?</h3>' +
-        '<p class="keterangan" style="margin-bottom:4px">' + (harian ? 'Rincian per hari:' : 'Rincian per bulan:') + '</p>' +
+        '<p class="keterangan" style="margin-bottom:4px">Rincian hari ini:</p>' +
         '<div class="batang-rincian">' + barisBatang + '</div>' +
       '</div>' +
       '<div class="kartu">' +
@@ -221,27 +240,139 @@
     }
   }
 
-  /* ---------- Saklar Per Bulan / Per Hari (tampilan saja) ---------- */
-  wadahHasil.addEventListener('click', function (e) {
-    var tombol = e.target.closest('.toggle-durasi');
-    if (!tombol) return;
-    modeDurasi = tombol.dataset.mode;
-    hitungLangsung();
-  });
+  /* ============================================================
+     Rangkuman bulanan (dari catatan harian yang benar-benar diisi)
+     ============================================================ */
+  function ringkasBulan(kunciBulan) {
+    var entri = ambilCatatan().filter(function (c) { return bulanDariTgl(c.tgl) === kunciBulan; });
+    if (!entri.length) return null;
+    var jumlah = 0;
+    entri.forEach(function (c) { jumlah += c.total; });
+    var rata = jumlah / entri.length;
+    var hariBulan = jumlahHariBulan(kunciBulan);
+    return {
+      bulan: kunciBulan,
+      hariTercatat: entri.length,
+      hariBulan: hariBulan,
+      totalTercatat: Math.round(jumlah * 10) / 10,
+      rata: Math.round(rata * 100) / 100,
+      proyeksi: Math.round(rata * hariBulan)   // perkiraan sebulan penuh
+    };
+  }
 
-  /* ---------- Riwayat ---------- */
+  /* Perbarui entri bulan berjalan di riwayat_karbon (dipakai
+     Dampak Bersama & Lencana — total = perkiraan sebulan penuh,
+     supaya bulan yang baru terisi sebagian tidak tampak "turun"
+     padahal hanya belum lengkap). */
+  function perbaruiRiwayatBulanan(kunciBulan) {
+    var ringkas = ringkasBulan(kunciBulan);
+    var riwayat = ambilRiwayat().filter(function (item) {
+      var bulanItem = item.bulan || bulanDariTs(item.tanggal);
+      return bulanItem !== kunciBulan;                 // buang entri lama bulan ini
+    });
+    if (ringkas) {
+      riwayat.unshift({
+        tanggal: Date.now(),
+        bulan: kunciBulan,
+        total: ringkas.proyeksi,
+        hariTercatat: ringkas.hariTercatat,
+        totalTercatat: ringkas.totalTercatat
+      });
+    }
+    riwayat.sort(function (a, b) { return (b.tanggal || 0) - (a.tanggal || 0); });
+    if (riwayat.length > MAKS_BULAN) riwayat = riwayat.slice(0, MAKS_BULAN);
+    simpanRiwayat(riwayat);
+  }
+
+  /* ---------- Kartu Laporan Bulanan ---------- */
+  function gambarLaporan() {
+    if (!wadahLaporan) return;
+    var bulanKini = bulanDariTgl(tglHariIni());
+    var ringkas = ringkasBulan(bulanKini);
+
+    var isiKini;
+    if (!ringkas) {
+      isiKini =
+        '<p class="keterangan">Belum ada catatan bulan ini. Isi kegiatan hari ini lalu ketuk <b>"Simpan Catatan Hari Ini"</b> — lakukan tiap hari, dan laporan bulanannya tersusun sendiri di sini.</p>';
+    } else {
+      var persen = Math.round(ringkas.hariTercatat / ringkas.hariBulan * 100);
+      var pohon = Math.max(1, Math.round(ringkas.proyeksi * 12 / 21));
+      isiKini =
+        '<div class="laporan-baris-atas">' +
+          '<span class="laporan-hari"><b>' + ringkas.hariTercatat + '</b> dari ' + ringkas.hariBulan + ' hari tercatat</span>' +
+        '</div>' +
+        '<div class="progres-luar"><div class="progres-dalam" style="width:' + persen + '%"></div></div>' +
+        '<ul class="statistik-laporan">' +
+          '<li><b>' + ringkas.totalTercatat.toFixed(1) + '</b><small>kg total tercatat</small></li>' +
+          '<li><b>' + ringkas.rata.toFixed(1) + '</b><small>kg rata-rata/hari</small></li>' +
+          '<li><b>' + ringkas.proyeksi + '</b><small>kg perkiraan sebulan</small></li>' +
+        '</ul>' +
+        '<p class="keterangan">🌳 Perkiraan sebulan penuh setara kerja <b>' + pohon + ' pohon</b> selama setahun. ' +
+          (ringkas.hariTercatat < ringkas.hariBulan
+            ? 'Makin rajin mencatat tiap hari, makin akurat laporannya.'
+            : 'Sebulan penuh tercatat — laporan ini sudah lengkap!') + '</p>' +
+        '<button type="button" class="tombol tombol-kedua tombol-lebar tombol-kecil" id="tombol-bagikan-laporan" style="margin-top:10px">' +
+          (window.GamaBagikan ? window.GamaBagikan.IKON : '') + ' Bagikan Laporan Bulan Ini' +
+        '</button>';
+    }
+
+    // bulan-bulan sebelumnya (dari rangkuman bulanan tersimpan)
+    var lalu = ambilRiwayat().filter(function (item) {
+      var bulanItem = item.bulan || bulanDariTs(item.tanggal);
+      return bulanItem !== bulanKini;
+    });
+    var isiLalu = '';
+    if (lalu.length) {
+      isiLalu =
+        '<h4 class="laporan-sub">Bulan-bulan sebelumnya</h4>' +
+        '<ul class="daftar-riwayat">' +
+        lalu.map(function (item) {
+          var bulanItem = item.bulan || bulanDariTs(item.tanggal);
+          var ket = item.hariTercatat
+            ? item.hariTercatat + ' hari tercatat'
+            : 'perkiraan versi lama';
+          return '<li><span>' + namaBulan(bulanItem) + ' <small class="keterangan">(' + ket + ')</small></span>' +
+            '<span class="riwayat-nilai">' + item.total + ' kg</span></li>';
+        }).join('') +
+        '</ul>';
+    }
+
+    wadahLaporan.innerHTML =
+      '<div class="kartu kartu-laporan">' +
+        '<h3>Laporan ' + namaBulan(bulanKini) + '</h3>' +
+        isiKini + isiLalu +
+      '</div>';
+
+    var tombolLaporan = document.getElementById('tombol-bagikan-laporan');
+    if (tombolLaporan && window.GamaBagikan && ringkas) {
+      tombolLaporan.addEventListener('click', function () {
+        var teks =
+          'Laporan jejak karbon saya — ' + namaBulan(bulanKini) + ':\n' +
+          '• ' + ringkas.hariTercatat + ' dari ' + ringkas.hariBulan + ' hari tercatat\n' +
+          '• Total tercatat: ' + ringkas.totalTercatat.toFixed(1) + ' kg CO₂\n' +
+          '• Rata-rata: ' + ringkas.rata.toFixed(1) + ' kg/hari\n' +
+          '• Perkiraan sebulan penuh: ' + ringkas.proyeksi + ' kg CO₂\n' +
+          'Dicatat harian lewat aplikasi GaMa Hijau — yuk catat juga punyamu!';
+        window.GamaBagikan.bagikan('Laporan Jejak Karbon ' + namaBulan(bulanKini), teks);
+      });
+    }
+  }
+
+  /* ---------- Daftar catatan harian bulan ini ---------- */
   function gambarRiwayat() {
-    var riwayat = ambilRiwayat();
-    if (!riwayat.length) {
-      daftarRiwayat.innerHTML = '<li class="riwayat-kosong">Belum ada perhitungan tersimpan.</li>';
+    var bulanKini = bulanDariTgl(tglHariIni());
+    var entri = ambilCatatan().filter(function (c) { return bulanDariTgl(c.tgl) === bulanKini; });
+    if (!entri.length) {
+      daftarRiwayat.innerHTML = '<li class="riwayat-kosong">Belum ada catatan bulan ini.</li>';
       return;
     }
-    daftarRiwayat.innerHTML = riwayat.map(function (item, i) {
+    entri.sort(function (a, b) { return a.tgl < b.tgl ? 1 : -1; });
+    daftarRiwayat.innerHTML = entri.map(function (c) {
       return (
         '<li>' +
-          '<span>' + window.formatTanggal(item.tanggal, true) + '</span>' +
-          '<span class="riwayat-nilai">' + item.total + ' kg</span>' +
-          '<button type="button" class="tombol-hapus" data-indeks="' + i + '">Hapus</button>' +
+          '<span>' + window.formatTanggal(c.tgl + 'T12:00:00') + '</span>' +
+          '<span class="riwayat-nilai">' + c.total.toFixed(1) + ' kg</span>' +
+          '<button type="button" class="tombol-hapus" data-tgl="' + c.tgl + '">Hapus</button>' +
         '</li>'
       );
     }).join('');
@@ -250,13 +381,14 @@
   daftarRiwayat.addEventListener('click', function (e) {
     var tombol = e.target.closest('.tombol-hapus');
     if (!tombol) return;
-    var riwayat = ambilRiwayat();
-    riwayat.splice(parseInt(tombol.dataset.indeks, 10), 1);
-    simpanRiwayat(riwayat);
+    var tgl = tombol.dataset.tgl;
+    simpanCatatan(ambilCatatan().filter(function (c) { return c.tgl !== tgl; }));
+    perbaruiRiwayatBulanan(bulanDariTgl(tgl));
     gambarRiwayat();
+    gambarLaporan();
   });
 
-  /* ---------- Preset cepat listrik (klik → isi angka, tetap bisa diketik) ---------- */
+  /* ---------- Preset cepat listrik ---------- */
   var inputListrik = document.getElementById('in-listrik');
   var grupPreset = document.getElementById('preset-listrik');
 
@@ -275,9 +407,7 @@
     hitungLangsung();
   });
 
-  /* ---------- Saklar "tidak diisi" per bagian ----------
-     Bagian yang dilewati diredupkan & isiannya dinonaktifkan,
-     supaya jelas bahwa angkanya tidak ikut dihitung. */
+  /* ---------- Saklar "tidak diisi" per bagian ---------- */
   var DAFTAR_LEWATI = [
     ['lewati-listrik', 'bagian-listrik'],
     ['lewati-masak', 'bagian-masak'],
@@ -295,7 +425,7 @@
     });
   }
 
-  /* ---------- Kalkulasi otomatis (real-time, tanpa tombol hitung) ---------- */
+  /* ---------- Kalkulasi otomatis ---------- */
   function hitungLangsung() {
     tampilkanHasil(hitung(), false);
   }
@@ -311,27 +441,43 @@
     hitungLangsung();
   });
 
-  /* ---------- Simpan ke riwayat (tombol) ---------- */
+  /* ---------- Simpan catatan HARI INI ---------- */
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     var hasil = hitung();
+    var tgl = tglHariIni();
 
-    var riwayat = ambilRiwayat();
-    riwayat.unshift({ tanggal: Date.now(), total: Math.round(hasil.total) });
-    if (riwayat.length > 20) riwayat = riwayat.slice(0, 20); // simpan maksimal 20
-    simpanRiwayat(riwayat);
+    // satu catatan per tanggal — simpan ulang = perbarui
+    var catatan = ambilCatatan().filter(function (c) { return c.tgl !== tgl; });
+    var sudahAda = catatan.length !== ambilCatatan().length;
+    catatan.unshift({
+      tgl: tgl,
+      total: Math.round(hasil.total * 100) / 100,
+      rincian: {
+        transportasi: Math.round(hasil.rincian.transportasi * 100) / 100,
+        listrik: Math.round(hasil.rincian.listrik * 100) / 100,
+        memasak: Math.round(hasil.rincian.memasak * 100) / 100,
+        makanan: Math.round(hasil.rincian.makanan * 100) / 100
+      },
+      dilewati: hasil.dilewati
+    });
+    if (catatan.length > MAKS_CATATAN) catatan = catatan.slice(0, MAKS_CATATAN);
+    simpanCatatan(catatan);
+
+    perbaruiRiwayatBulanan(bulanDariTgl(tgl));
     gambarRiwayat();
+    gambarLaporan();
 
     // umpan balik singkat pada tombol (isi asli mengandung ikon SVG)
     var tombol = document.getElementById('tombol-simpan');
     if (tombol) {
       var isiAsli = tombol.innerHTML;
-      tombol.textContent = '✓ Tersimpan!';
+      tombol.textContent = sudahAda ? '✓ Catatan hari ini diperbarui!' : '✓ Tercatat untuk hari ini!';
       tombol.disabled = true;
       setTimeout(function () {
         tombol.innerHTML = isiAsli;
         tombol.disabled = false;
-      }, 1500);
+      }, 1800);
     }
     tampilkanHasil(hasil, false);
 
@@ -339,37 +485,31 @@
     if (window.GamaSiklus) window.GamaSiklus.perbarui();
   });
 
-  /* ---------- Bagikan hasil (Web Share / WhatsApp) ---------- */
+  /* ---------- Bagikan hasil hari ini (Web Share / WhatsApp) ---------- */
   var wadahAksi = document.getElementById('aksi-karbon');
   if (wadahAksi && window.GamaBagikan) {
     wadahAksi.innerHTML =
       '<button type="button" class="tombol tombol-kedua tombol-lebar" id="tombol-bagikan-karbon">' +
-        window.GamaBagikan.IKON + ' Bagikan Hasil' +
+        window.GamaBagikan.IKON + ' Bagikan Hasil Hari Ini' +
       '</button>';
     document.getElementById('tombol-bagikan-karbon').addEventListener('click', function () {
       var hasil = hitung();
-      var harian = modeDurasi === 'hari';
-      var bagi = harian ? HARI_PER_BULAN : 1;
-      var satuan = harian ? 'per hari' : 'bulan ini';
-      function angka(n) {
-        var v = n / bagi;
-        return harian ? v.toFixed(1) : Math.round(v);
-      }
       function bagian(n, dilewati) {
-        return dilewati ? 'tidak diisi' : angka(n) + ' kg';
+        return dilewati ? 'tidak diisi' : n.toFixed(1) + ' kg';
       }
       var teks =
-        'Jejak karbon saya ' + satuan + ' kira-kira ' + angka(hasil.total) + ' kg CO₂.\n' +
+        'Jejak karbon saya hari ini kira-kira ' + hasil.total.toFixed(1) + ' kg CO₂.\n' +
         'Rinciannya — perjalanan: ' + bagian(hasil.rincian.transportasi, false) + ', ' +
         'listrik: ' + bagian(hasil.rincian.listrik, hasil.dilewati.listrik) + ', ' +
         'memasak: ' + bagian(hasil.rincian.memasak, hasil.dilewati.memasak) + ', ' +
         'makanan: ' + bagian(hasil.rincian.makanan, hasil.dilewati.makanan) + '.\n' +
-        'Yuk hitung juga punyamu di aplikasi GaMa Hijau!';
-      window.GamaBagikan.bagikan('Jejak Karbon Saya', teks);
+        'Yuk catat juga punyamu di aplikasi GaMa Hijau!';
+      window.GamaBagikan.bagikan('Jejak Karbon Hari Ini', teks);
     });
   }
 
   gambarRiwayat();
+  gambarLaporan();
   perbaruiLewati();
   hitungLangsung(); // hasil langsung tampil sejak halaman dibuka
 })();

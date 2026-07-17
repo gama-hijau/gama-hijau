@@ -15,7 +15,7 @@
   var MAKS_PROFIL = 6;
   var JUMLAH_WARNA = 5;               // kelas .avatar-w0 … .avatar-w4
   /* nama-nama data milik satu profil (dipakai saat hapus/reset) */
-  var DATA_PROFIL = ['riwayat_karbon', 'progres_eco', 'jadwal', 'siklus_tahap', 'lencana', 'perjalanan'];
+  var DATA_PROFIL = ['riwayat_karbon', 'catatan_harian', 'progres_eco', 'jadwal', 'siklus_tahap', 'lencana', 'perjalanan'];
 
   function amanHtml(teks) {
     return String(teks || '')
