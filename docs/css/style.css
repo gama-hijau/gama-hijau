@@ -358,48 +358,56 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: var(-
 .kartu-mini small { display: block; color: var(--teks-samar); font-size: 0.73rem; }
 .kartu-mini b { color: var(--hijau-jati); font-size: 0.95rem; }
 
-.menu-fitur { display: grid; grid-template-columns: 1fr; gap: 12px; }
-@media (min-width: 470px) { .menu-fitur { grid-template-columns: 1fr 1fr; } }
+/* Kisi 3 kolom kompak — semua menu terlihat tanpa scroll panjang */
+.menu-fitur { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
+@media (min-width: 470px) { .menu-fitur { gap: 12px; } }
 
 .kartu-fitur {
   position: relative;
-  display: flex; flex-direction: column; align-items: flex-start; gap: 11px;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
   background: var(--permukaan);
   border: 1px solid var(--garis);
-  border-radius: 20px 22px 18px 22px / 22px 18px 22px 18px;
+  border-radius: 18px 20px 16px 20px / 20px 16px 20px 16px;
   box-shadow: var(--bayang);
-  padding: 14px 13px 15px;
-  min-height: 76px;
-  text-align: left;
+  padding: 12px 6px;
+  min-height: 0;
+  text-align: center;
   overflow: hidden;
 }
 .kartu-fitur::after {                 /* daun samar di pojok kartu */
   content: "";
-  position: absolute; right: -14px; bottom: -16px;
-  width: 64px; height: 64px;
+  position: absolute; right: -10px; bottom: -12px;
+  width: 42px; height: 42px;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2C7 6 4 10.5 4 14.5 4 18.6 7.4 22 11.5 22 15.5 22 20 19 22 12c0 0-9-2-10-10z' fill='%2333472E'/%3E%3C/svg%3E") no-repeat center / contain;
   opacity: 0.05;
   pointer-events: none;
 }
 .kartu-fitur:active { transform: scale(0.97); }
 .kartu-fitur-ikon {
-  flex: none; width: 48px; height: 48px;
+  flex: none; width: 44px; height: 44px;
   border-radius: 46% 54% 50% 50% / 55% 45% 55% 45%;
   display: grid; place-items: center;
 }
 .menu-fitur .kartu-fitur:nth-child(even) .kartu-fitur-ikon {
   border-radius: 55% 45% 52% 48% / 48% 55% 45% 52%;   /* gumpalan berselang-seling */
 }
-.kartu-fitur-ikon svg { width: 32px; height: 32px; }
+.kartu-fitur-ikon svg { width: 30px; height: 30px; }
 .ikon-latar-hijau   { background: var(--hijau-pucat); }
 .ikon-latar-cokelat { background: var(--tanah-pucat); }
 .ikon-latar-biru    { background: var(--biru-pucat); }
 .ikon-latar-kuning  { background: var(--kuning-pucat); }
+.kartu-fitur-teks { width: 100%; }
 .kartu-fitur-teks strong {
   display: block; color: var(--hijau-jati);
-  font-family: var(--font-judul); font-size: 1.02rem;
+  font-family: var(--font-judul); font-size: 0.78rem; line-height: 1.2;
 }
-.kartu-fitur-teks small { color: var(--teks-samar); font-size: 0.84rem; line-height: 1.35; display: block; }
+/* Keterangan kecil disembunyikan di layar sempit supaya kisi 3 kolom lega */
+.kartu-fitur-teks small { display: none; color: var(--teks-samar); font-size: 0.76rem; line-height: 1.3; margin-top: 2px; }
+@media (min-width: 470px) {
+  .kartu-fitur { padding: 14px 10px; }
+  .kartu-fitur-teks strong { font-size: 0.92rem; }
+  .kartu-fitur-teks small { display: block; }
+}
 
 .kartu-info { border-left: 6px solid var(--hijau-muda-jagung); }
 
@@ -540,6 +548,32 @@ input:focus, select:focus, textarea:focus {
 }
 .hasil-utama.tingkat-sedang { border-top-color: var(--kuning-jagung); }
 .hasil-utama.tingkat-tinggi { border-top-color: #A34F2E; }
+
+/* Saklar "Tidak diisi" per bagian kalkulator */
+.pil-lewati {
+  display: flex; align-items: center; gap: 10px;
+  margin-top: 10px;
+  padding: 10px 12px;
+  min-height: 48px;
+  border-radius: var(--radius-kecil);
+  background: var(--kabut-pagi);
+  font-size: 0.88rem; font-weight: 700;
+  color: var(--teks-samar);
+  cursor: pointer;
+  user-select: none;
+}
+.pil-lewati input { position: absolute; opacity: 0; }
+.pil-lewati input:checked ~ .cek-kotak {
+  background: var(--tanah-basah); border-color: var(--tanah-basah);
+}
+.pil-lewati input:checked ~ .cek-kotak::after { transform: scale(1); }
+.pil-lewati input:focus-visible ~ .cek-kotak {
+  outline: 3px solid var(--kuning-jagung); outline-offset: 2px;
+}
+fieldset.terlewati .isian-bagian { opacity: 0.4; }
+fieldset.terlewati .pil-lewati { background: var(--tanah-pucat); color: #543A26; }
+
+.batang-lewati .batang-label b { color: var(--teks-samar); font-style: italic; }
 
 .grup-toggle-durasi {
   display: inline-flex; gap: 4px;

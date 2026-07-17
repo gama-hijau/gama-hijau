@@ -57,14 +57,23 @@
     var kwh = parseFloat(document.getElementById('in-listrik').value) || 0;
     var lpg = Math.max(0, parseFloat(document.getElementById('in-lpg').value) || 0);
 
+    // Bagian yang ditandai "tidak diisi" dihitung 0 — misalnya orang yang
+    // hanya ingin tahu emisi kendaraannya saja.
+    var dilewati = {
+      transportasi: false,
+      listrik: document.getElementById('lewati-listrik').checked,
+      memasak: document.getElementById('lewati-masak').checked,
+      makanan: document.getElementById('lewati-makan').checked
+    };
+
     var rincian = {
       transportasi: (motor * FAKTOR_TRANSPORT.motor + mobil * FAKTOR_TRANSPORT.mobil + umum * FAKTOR_TRANSPORT.umum) * 30,
-      listrik: kwh * 0.85,
-      memasak: lpg * 9 + nilaiRadio('in-kayu'),
-      makanan: nilaiRadio('in-makan')
+      listrik: dilewati.listrik ? 0 : kwh * 0.85,
+      memasak: dilewati.memasak ? 0 : (lpg * 9 + nilaiRadio('in-kayu')),
+      makanan: dilewati.makanan ? 0 : nilaiRadio('in-makan')
     };
     var total = rincian.transportasi + rincian.listrik + rincian.memasak + rincian.makanan;
-    return { total: total, rincian: rincian };
+    return { total: total, rincian: rincian, dilewati: dilewati };
   }
 
   /* ---------- Saran pengurangan ---------- */
@@ -138,11 +147,19 @@
       ? (RATA_RATA_NASIONAL / HARI_PER_BULAN).toFixed(1)
       : RATA_RATA_NASIONAL;
 
+    var adaLewat = hasil.dilewati &&
+      (hasil.dilewati.listrik || hasil.dilewati.memasak || hasil.dilewati.makanan);
+
     var teksBanding = 'Kira-kira setara emisi rata-rata warga Indonesia (± ' + rataNasionalTampil + ' ' + satuanSingkat + ').';
     if (total < RATA_RATA_NASIONAL * 0.8) {
       teksBanding = 'Lebih rendah dari rata-rata warga Indonesia (± ' + rataNasionalTampil + ' ' + satuanSingkat + '). Bagus sekali!';
     } else if (total > RATA_RATA_NASIONAL * 1.2) {
       teksBanding = 'Lebih tinggi dari rata-rata warga Indonesia (± ' + rataNasionalTampil + ' ' + satuanSingkat + ').';
+    }
+    if (adaLewat) {
+      // membandingkan angka yang tidak lengkap dengan rata-rata nasional
+      // akan menyesatkan — ganti dengan catatan jujur
+      teksBanding = 'Ada bagian yang tidak diisi, jadi ini <b>belum</b> jejak karbon lengkap Anda — hanya dari bagian yang dihitung.';
     }
 
     var teksPerubahan = '';
@@ -158,12 +175,14 @@
 
     var totalUntukBatang = Math.max(hasil.total, 1);
     var barisBatang = Object.keys(hasil.rincian).map(function (k) {
+      var lewatiIni = hasil.dilewati && hasil.dilewati[k];
       var nilaiBulan = hasil.rincian[k];
-      var persen = Math.round(nilaiBulan / totalUntukBatang * 100); // rasio sama di kedua mode
+      var persen = lewatiIni ? 0 : Math.round(nilaiBulan / totalUntukBatang * 100); // rasio sama di kedua mode
       var nilaiTampil = harian ? (nilaiBulan / HARI_PER_BULAN).toFixed(1) : Math.round(nilaiBulan);
+      var teksNilai = lewatiIni ? 'tidak diisi' : (nilaiTampil + ' kg (' + persen + '%)');
       return (
-        '<div class="batang-baris">' +
-          '<div class="batang-label"><span>' + NAMA_KATEGORI[k] + '</span><b>' + nilaiTampil + ' kg (' + persen + '%)</b></div>' +
+        '<div class="batang-baris' + (lewatiIni ? ' batang-lewati' : '') + '">' +
+          '<div class="batang-label"><span>' + NAMA_KATEGORI[k] + '</span><b>' + teksNilai + '</b></div>' +
           '<div class="batang-luar"><div class="batang-dalam" style="width:' + persen + '%"></div></div>' +
         '</div>'
       );
@@ -256,16 +275,38 @@
     hitungLangsung();
   });
 
+  /* ---------- Saklar "tidak diisi" per bagian ----------
+     Bagian yang dilewati diredupkan & isiannya dinonaktifkan,
+     supaya jelas bahwa angkanya tidak ikut dihitung. */
+  var DAFTAR_LEWATI = [
+    ['lewati-listrik', 'bagian-listrik'],
+    ['lewati-masak', 'bagian-masak'],
+    ['lewati-makan', 'bagian-makan']
+  ];
+  function perbaruiLewati() {
+    DAFTAR_LEWATI.forEach(function (ps) {
+      var cek = document.getElementById(ps[0]);
+      var bagian = document.getElementById(ps[1]);
+      if (!cek || !bagian) return;
+      bagian.classList.toggle('terlewati', cek.checked);
+      bagian.querySelectorAll('.isian-bagian input, .isian-bagian button').forEach(function (el) {
+        el.disabled = cek.checked;
+      });
+    });
+  }
+
   /* ---------- Kalkulasi otomatis (real-time, tanpa tombol hitung) ---------- */
   function hitungLangsung() {
     tampilkanHasil(hitung(), false);
   }
 
   form.addEventListener('input', function () {
+    perbaruiLewati();
     tandaiPresetAktif();
     hitungLangsung();
   });
   form.addEventListener('change', function () {
+    perbaruiLewati();
     tandaiPresetAktif();
     hitungLangsung();
   });
@@ -314,17 +355,21 @@
         var v = n / bagi;
         return harian ? v.toFixed(1) : Math.round(v);
       }
+      function bagian(n, dilewati) {
+        return dilewati ? 'tidak diisi' : angka(n) + ' kg';
+      }
       var teks =
         'Jejak karbon saya ' + satuan + ' kira-kira ' + angka(hasil.total) + ' kg CO₂.\n' +
-        'Rinciannya — perjalanan: ' + angka(hasil.rincian.transportasi) + ' kg, ' +
-        'listrik: ' + angka(hasil.rincian.listrik) + ' kg, ' +
-        'memasak: ' + angka(hasil.rincian.memasak) + ' kg, ' +
-        'makanan: ' + angka(hasil.rincian.makanan) + ' kg.\n' +
+        'Rinciannya — perjalanan: ' + bagian(hasil.rincian.transportasi, false) + ', ' +
+        'listrik: ' + bagian(hasil.rincian.listrik, hasil.dilewati.listrik) + ', ' +
+        'memasak: ' + bagian(hasil.rincian.memasak, hasil.dilewati.memasak) + ', ' +
+        'makanan: ' + bagian(hasil.rincian.makanan, hasil.dilewati.makanan) + '.\n' +
         'Yuk hitung juga punyamu di aplikasi GaMa Hijau!';
       window.GamaBagikan.bagikan('Jejak Karbon Saya', teks);
     });
   }
 
   gambarRiwayat();
+  perbaruiLewati();
   hitungLangsung(); // hasil langsung tampil sejak halaman dibuka
 })();

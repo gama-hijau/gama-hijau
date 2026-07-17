@@ -321,9 +321,14 @@
           </button>
         </fieldset>
 
-        <fieldset class="kartu">
+        <fieldset class="kartu" id="bagian-listrik">
           <legend><span class="nomor-langkah">2</span> Listrik di rumah</legend>
-          <div class="baris-input">
+          <label class="pil-lewati">
+            <input type="checkbox" id="lewati-listrik">
+            <span class="cek-kotak" aria-hidden="true"></span>
+            <span>Tidak diisi — jangan hitung bagian ini</span>
+          </label>
+          <div class="baris-input isian-bagian">
             <label for="in-listrik">Pemakaian listrik rumah sebulan</label>
             <div class="input-satuan">
               <input type="number" id="in-listrik" min="0" max="10000" step="1" value="55" inputmode="decimal">
@@ -339,16 +344,21 @@
           </div>
         </fieldset>
 
-        <fieldset class="kartu">
+        <fieldset class="kartu" id="bagian-masak">
           <legend><span class="nomor-langkah">3</span> Memasak</legend>
-          <div class="baris-input">
+          <label class="pil-lewati">
+            <input type="checkbox" id="lewati-masak">
+            <span class="cek-kotak" aria-hidden="true"></span>
+            <span>Tidak diisi — jangan hitung bagian ini</span>
+          </label>
+          <div class="baris-input isian-bagian">
             <label for="in-lpg">Berapa tabung gas LPG 3 kg habis dalam sebulan?</label>
             <div class="input-satuan">
               <input type="number" id="in-lpg" min="0" max="30" step="0.5" value="1" inputmode="decimal">
               <span>tabung</span>
             </div>
           </div>
-          <div class="baris-input">
+          <div class="baris-input isian-bagian">
             <span class="label-radio">Seberapa sering memasak pakai kayu bakar?</span>
             <div class="grup-radio" role="radiogroup">
               <label class="pil-radio"><input type="radio" name="in-kayu" value="0" checked><span>Tidak pernah</span></label>
@@ -358,9 +368,14 @@
           </div>
         </fieldset>
 
-        <fieldset class="kartu">
+        <fieldset class="kartu" id="bagian-makan">
           <legend><span class="nomor-langkah">4</span> Pola makan</legend>
-          <div class="baris-input">
+          <label class="pil-lewati">
+            <input type="checkbox" id="lewati-makan">
+            <span class="cek-kotak" aria-hidden="true"></span>
+            <span>Tidak diisi — jangan hitung bagian ini</span>
+          </label>
+          <div class="baris-input isian-bagian">
             <span class="label-radio">Seberapa sering makan daging (sapi/ayam/kambing)?</span>
             <div class="grup-radio" role="radiogroup">
               <label class="pil-radio"><input type="radio" name="in-makan" value="90"><span>Hampir tiap hari</span></label>
