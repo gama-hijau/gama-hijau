@@ -96,7 +96,6 @@
     var mobil = Math.max(0, parseFloat(document.getElementById('in-mobil').value) || 0);
     var umum = Math.max(0, parseFloat(document.getElementById('in-umum').value) || 0);
     var kwh = parseFloat(document.getElementById('in-listrik').value) || 0;
-    var lpg = Math.max(0, parseFloat(document.getElementById('in-lpg').value) || 0);
 
     // Bagian yang ditandai "tidak diisi" dihitung 0 — misalnya orang yang
     // hanya ingin tahu emisi kendaraannya saja.
@@ -107,13 +106,15 @@
       makanan: document.getElementById('lewati-makan').checked
     };
 
-    // Transportasi = km yang benar-benar ditempuh HARI INI.
-    // Kebiasaan bulanan (listrik/masak/makan) diambil porsi hariannya.
+    // Semua kategori diisi untuk HARI INI, kecuali Listrik: itu tetap
+    // dijawab sebagai kebiasaan bulanan (kWh/bulan dari tagihan PLN,
+    // karena orang memang tidak bisa tahu pemakaian persis hari ini),
+    // lalu diambil porsi seharinya (dibagi 30) untuk masuk total hari ini.
     var rincian = {
       transportasi: motor * FAKTOR_TRANSPORT.motor + mobil * FAKTOR_TRANSPORT.mobil + umum * FAKTOR_TRANSPORT.umum,
       listrik: dilewati.listrik ? 0 : (kwh * 0.85) / HARI_PER_BULAN,
-      memasak: dilewati.memasak ? 0 : (lpg * 9 + nilaiRadio('in-kayu')) / HARI_PER_BULAN,
-      makanan: dilewati.makanan ? 0 : nilaiRadio('in-makan') / HARI_PER_BULAN
+      memasak: dilewati.memasak ? 0 : (nilaiRadio('in-gas') + nilaiRadio('in-kayu')),
+      makanan: dilewati.makanan ? 0 : nilaiRadio('in-makan')
     };
     var total = rincian.transportasi + rincian.listrik + rincian.memasak + rincian.makanan;
     return { total: total, rincian: rincian, dilewati: dilewati };

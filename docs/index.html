@@ -346,45 +346,45 @@
         </fieldset>
 
         <fieldset class="kartu" id="bagian-masak">
-          <legend><span class="nomor-langkah">3</span> Memasak</legend>
-          <small class="keterangan">Kebiasaan bulanan — porsi seharinya yang masuk hitungan hari ini.</small>
+          <legend><span class="nomor-langkah">3</span> Memasak hari ini</legend>
+          <small class="keterangan">Isi sesuai kejadian hari ini saja.</small>
           <label class="pil-lewati">
             <input type="checkbox" id="lewati-masak">
             <span class="cek-kotak" aria-hidden="true"></span>
             <span>Tidak diisi — jangan hitung bagian ini</span>
           </label>
           <div class="baris-input isian-bagian">
-            <label for="in-lpg">Berapa tabung gas LPG 3 kg habis dalam sebulan?</label>
-            <div class="input-satuan">
-              <input type="number" id="in-lpg" min="0" max="30" step="0.5" value="1" inputmode="decimal">
-              <span>tabung</span>
+            <span class="label-radio">Apakah hari ini masak pakai kompor gas (LPG)?</span>
+            <div class="grup-radio" role="radiogroup">
+              <label class="pil-radio"><input type="radio" name="in-gas" value="0"><span>Tidak masak / tidak pakai gas</span></label>
+              <label class="pil-radio"><input type="radio" name="in-gas" value="0.3" checked><span>Ya, seperti biasa</span></label>
+              <label class="pil-radio"><input type="radio" name="in-gas" value="0.6"><span>Ya, lebih banyak (ada acara/tamu)</span></label>
             </div>
           </div>
           <div class="baris-input isian-bagian">
-            <span class="label-radio">Seberapa sering memasak pakai kayu bakar?</span>
+            <span class="label-radio">Apakah hari ini masak pakai kayu bakar?</span>
             <div class="grup-radio" role="radiogroup">
-              <label class="pil-radio"><input type="radio" name="in-kayu" value="0" checked><span>Tidak pernah</span></label>
-              <label class="pil-radio"><input type="radio" name="in-kayu" value="30"><span>Kadang-kadang</span></label>
-              <label class="pil-radio"><input type="radio" name="in-kayu" value="150"><span>Hampir tiap hari</span></label>
+              <label class="pil-radio"><input type="radio" name="in-kayu" value="0" checked><span>Tidak</span></label>
+              <label class="pil-radio"><input type="radio" name="in-kayu" value="5"><span>Ya</span></label>
             </div>
           </div>
         </fieldset>
 
         <fieldset class="kartu" id="bagian-makan">
-          <legend><span class="nomor-langkah">4</span> Pola makan</legend>
-          <small class="keterangan">Kebiasaan umum — porsi seharinya yang masuk hitungan hari ini.</small>
+          <legend><span class="nomor-langkah">4</span> Pola makan hari ini</legend>
+          <small class="keterangan">Isi sesuai yang benar-benar dimakan hari ini.</small>
           <label class="pil-lewati">
             <input type="checkbox" id="lewati-makan">
             <span class="cek-kotak" aria-hidden="true"></span>
             <span>Tidak diisi — jangan hitung bagian ini</span>
           </label>
           <div class="baris-input isian-bagian">
-            <span class="label-radio">Seberapa sering makan daging (sapi/ayam/kambing)?</span>
+            <span class="label-radio">Bagaimana pola makan Anda hari ini?</span>
             <div class="grup-radio" role="radiogroup">
-              <label class="pil-radio"><input type="radio" name="in-makan" value="90"><span>Hampir tiap hari</span></label>
-              <label class="pil-radio"><input type="radio" name="in-makan" value="55" checked><span>2–4 kali seminggu</span></label>
-              <label class="pil-radio"><input type="radio" name="in-makan" value="30"><span>Sekali seminggu / jarang</span></label>
-              <label class="pil-radio"><input type="radio" name="in-makan" value="20"><span>Lebih banyak sayur &amp; ikan</span></label>
+              <label class="pil-radio"><input type="radio" name="in-makan" value="3"><span>Banyak makan daging (sapi/ayam/kambing)</span></label>
+              <label class="pil-radio"><input type="radio" name="in-makan" value="1.83" checked><span>Ada daging secukupnya</span></label>
+              <label class="pil-radio"><input type="radio" name="in-makan" value="1"><span>Sedikit / jarang daging</span></label>
+              <label class="pil-radio"><input type="radio" name="in-makan" value="0.67"><span>Sayur &amp; ikan saja, tanpa daging merah</span></label>
             </div>
           </div>
         </fieldset>
