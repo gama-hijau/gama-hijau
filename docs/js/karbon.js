@@ -39,6 +39,19 @@
   var FAKTOR_TRANSPORT = { motor: 0.08, mobil: 0.19, umum: 0.05 };
   window.GamaKarbon = { FAKTOR: FAKTOR_TRANSPORT };
 
+  /* Faktor per "kali masak" — diturunkan dari baseline lama supaya
+     hasilnya tetap setara: gas 1 tabung/bulan (9kg) ÷30 hari ÷~2 kali
+     masak/hari ≈ 0.15 kg/kali; kayu bakar "hampir tiap hari" lama
+     (150kg/bulan) ÷30 ÷~2 kali/hari ≈ 2.5 kg/kali (kayu memang jauh
+     lebih besar emisinya per pemakaian daripada gas). */
+  var FAKTOR_GAS_PER_KALI = 0.15;
+  var FAKTOR_KAYU_PER_KALI = 2.5;
+
+  /* Pola makan: boleh centang lebih dari satu, dijumlah. Nilai per
+     kg CO2/hari kira-kira mengikuti selisih jejak protein hewani
+     (daging merah jauh lebih besar dari unggas/ikan). */
+  var DAFTAR_MAKAN = ['makan-daging-merah', 'makan-ayam', 'makan-ikan', 'makan-sayur'];
+
   var form = document.getElementById('form-karbon');
   var wadahHasil = document.getElementById('hasil-karbon');
   var daftarRiwayat = document.getElementById('daftar-riwayat');
@@ -86,16 +99,19 @@
   }
 
   /* ---------- Perhitungan (HARIAN) ---------- */
-  function nilaiRadio(nama) {
-    var pilihan = form.querySelector('input[name="' + nama + '"]:checked');
-    return pilihan ? parseFloat(pilihan.value) : 0;
-  }
-
   function hitung() {
     var motor = Math.max(0, parseFloat(document.getElementById('in-motor').value) || 0);
     var mobil = Math.max(0, parseFloat(document.getElementById('in-mobil').value) || 0);
     var umum = Math.max(0, parseFloat(document.getElementById('in-umum').value) || 0);
     var kwh = parseFloat(document.getElementById('in-listrik').value) || 0;
+    var kaliGas = Math.max(0, parseFloat(document.getElementById('in-gas-kali').value) || 0);
+    var kaliKayu = Math.max(0, parseFloat(document.getElementById('in-kayu-kali').value) || 0);
+
+    var totalMakan = 0;
+    DAFTAR_MAKAN.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el && el.checked) totalMakan += parseFloat(el.value) || 0;
+    });
 
     // Bagian yang ditandai "tidak diisi" dihitung 0 — misalnya orang yang
     // hanya ingin tahu emisi kendaraannya saja.
@@ -113,8 +129,8 @@
     var rincian = {
       transportasi: motor * FAKTOR_TRANSPORT.motor + mobil * FAKTOR_TRANSPORT.mobil + umum * FAKTOR_TRANSPORT.umum,
       listrik: dilewati.listrik ? 0 : (kwh * 0.85) / HARI_PER_BULAN,
-      memasak: dilewati.memasak ? 0 : (nilaiRadio('in-gas') + nilaiRadio('in-kayu')),
-      makanan: dilewati.makanan ? 0 : nilaiRadio('in-makan')
+      memasak: dilewati.memasak ? 0 : (kaliGas * FAKTOR_GAS_PER_KALI + kaliKayu * FAKTOR_KAYU_PER_KALI),
+      makanan: dilewati.makanan ? 0 : totalMakan
     };
     var total = rincian.transportasi + rincian.listrik + rincian.memasak + rincian.makanan;
     return { total: total, rincian: rincian, dilewati: dilewati };
@@ -389,23 +405,38 @@
     gambarLaporan();
   });
 
-  /* ---------- Preset cepat listrik ---------- */
-  var inputListrik = document.getElementById('in-listrik');
-  var grupPreset = document.getElementById('preset-listrik');
+  /* ---------- Preset cepat (listrik / gas / kayu bakar) ----------
+     Pola yang sama di ketiganya: kolom angka bebas + tombol pilihan
+     cepat yang mengisi angka itu. Warga tetap boleh ketik sendiri. */
+  var DAFTAR_PRESET = [
+    ['in-listrik', 'preset-listrik'],
+    ['in-gas-kali', 'preset-gas'],
+    ['in-kayu-kali', 'preset-kayu']
+  ];
 
   function tandaiPresetAktif() {
-    var nilai = parseFloat(inputListrik.value);
-    grupPreset.querySelectorAll('.chip-preset').forEach(function (chip) {
-      chip.classList.toggle('aktif', parseFloat(chip.dataset.kwh) === nilai);
+    DAFTAR_PRESET.forEach(function (ps) {
+      var input = document.getElementById(ps[0]);
+      var grup = document.getElementById(ps[1]);
+      if (!input || !grup) return;
+      var nilai = parseFloat(input.value);
+      grup.querySelectorAll('.chip-preset').forEach(function (chip) {
+        chip.classList.toggle('aktif', parseFloat(chip.dataset.nilai) === nilai);
+      });
     });
   }
 
-  grupPreset.addEventListener('click', function (e) {
-    var chip = e.target.closest('.chip-preset');
-    if (!chip) return;
-    inputListrik.value = chip.dataset.kwh;
-    tandaiPresetAktif();
-    hitungLangsung();
+  DAFTAR_PRESET.forEach(function (ps) {
+    var input = document.getElementById(ps[0]);
+    var grup = document.getElementById(ps[1]);
+    if (!input || !grup) return;
+    grup.addEventListener('click', function (e) {
+      var chip = e.target.closest('.chip-preset');
+      if (!chip) return;
+      input.value = chip.dataset.nilai;
+      tandaiPresetAktif();
+      hitungLangsung();
+    });
   });
 
   /* ---------- Saklar "tidak diisi" per bagian ---------- */
