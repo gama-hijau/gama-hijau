@@ -110,32 +110,32 @@
   var LANGKAH = [
     {
       judul: 'Siapkan bahan dengan takaran 1 : 3 : 10',
-      isi: 'Contoh untuk botol besar: <b>100 gram gula merah</b> (atau molase/gula aren), <b>300 gram sampah organik</b>, dan <b>1 liter air</b> bersih (air sumur/hujan yang sudah diendapkan juga boleh).',
+      isi: 'Takarannya gampang diingat: <b>1 bagian gula, 3 bagian sampah organik, 10 bagian air</b> (ditimbang beratnya, bukan volumenya). Contoh untuk botol besar: <b>100 gram gula merah</b> (atau molase/gula aren), <b>300 gram sampah organik</b>, dan <b>1 liter air</b> bersih (air sumur atau air hujan yang sudah diendapkan juga boleh). Gula ini jadi "makanan" bagi mikroba yang memfermentasi campuran ini, jadi jangan dikurangi takarannya. Mau bikin lebih banyak? Tinggal kalikan semua angka sama besar, misalnya 2 kali lipat jadi 200 gram : 600 gram : 2 liter.',
       gambar: 'bahan'
     },
     {
       judul: 'Potong kecil sampah organiknya',
-      isi: 'Gunakan <b>kulit buah dan sisa sayuran mentah</b> — kulit pisang, pepaya, jeruk, mangga, sisa kangkung. <b>Jangan</b> pakai sisa makanan bersantan, berminyak, daging, atau ikan karena akan busuk dan berbelatung. Potong kecil-kecil supaya cepat terfermentasi.',
+      isi: 'Gunakan <b>kulit buah dan sisa sayuran mentah</b>: kulit pisang, pepaya, jeruk, mangga, atau sisa kangkung dan sawi. <b>Jangan</b> pakai sisa makanan bersantan, berminyak, daging, atau ikan, karena bahan-bahan ini gampang busuk duluan dan mengundang belatung sebelum sempat terfermentasi jadi eco-enzyme. Potong kecil-kecil (seukuran satu-dua ruas jari) supaya permukaannya lebih luas, gulanya lebih cepat meresap, dan fermentasinya juga lebih cepat jadi.',
       gambar: 'potong'
     },
     {
       judul: 'Campur semua dalam wadah plastik',
-      isi: 'Larutkan gula ke dalam air, masukkan potongan sampah organik, lalu aduk. Gunakan <b>botol atau jeriken plastik</b> bertutup rapat. Isi <b>paling banyak 60%</b> dari wadah — sisakan ruang udara karena fermentasi menghasilkan gas.',
+      isi: 'Larutkan dulu gula ke dalam air sampai benar-benar tercampur, baru masukkan potongan sampah organiknya, lalu aduk rata. Gunakan <b>botol atau jeriken plastik</b> bertutup rapat, jangan pakai wadah kaca atau logam. Isi wadah <b>paling banyak 60%</b> saja, sisakan ruang udara di bagian atas, karena proses fermentasi menghasilkan gas yang butuh tempat mengembang. Kalau wadah diisi penuh, gasnya bisa mendesak dan membuat wadah bocor atau meletup.',
       gambar: 'campur'
     },
     {
       judul: 'Buang gas di 2 minggu pertama',
-      isi: 'Selama 1–2 minggu pertama, <b>buka tutup sebentar setiap hari</b> untuk mengeluarkan gas, lalu tutup rapat lagi. Kalau lupa, wadah bisa menggembung bahkan meletup. Setelah itu cukup dibuka sesekali.',
+      isi: 'Selama <b>1-2 minggu pertama</b>, fermentasi sedang aktif-aktifnya dan menghasilkan banyak gas. Buka tutup wadahnya sebentar saja setiap hari (cukup beberapa detik) untuk melepas gas yang terkumpul, lalu tutup rapat lagi. Lakukan di tempat terbuka supaya baunya tidak menyengat di dalam rumah. Kalau sampai lupa berhari-hari, gas yang menumpuk bisa membuat wadah menggembung, bahkan bisa meletup dan mengotori sekitarnya. Setelah 2 minggu, gasnya mulai mereda, jadi cukup dibuka sesekali saja, misalnya seminggu sekali.',
       gambar: 'gas'
     },
     {
       judul: 'Simpan dan tunggu 3 bulan',
-      isi: 'Simpan di tempat <b>teduh dan tidak kena matahari langsung</b>, jauh dari jangkauan anak-anak. Aduk atau goyang perlahan seminggu sekali. Muncul lapisan putih di permukaan? Itu normal, tanda fermentasi jalan. Kalau berbelatung, tambahkan gula dan tutup lebih rapat.',
+      isi: 'Simpan wadahnya di tempat <b>teduh dan tidak kena matahari langsung</b> (sinar matahari bisa merusak proses fermentasi), serta jauh dari jangkauan anak-anak. Goyang atau aduk perlahan seminggu sekali supaya campurannya merata. Selama menunggu, jangan kaget kalau muncul lapisan putih tipis di permukaan cairan, itu normal dan justru pertanda fermentasinya berjalan baik. Kalau sampai muncul belatung, jangan dibuang, cukup tambahkan sedikit gula lagi dan pastikan tutupnya benar-benar rapat, biasanya itu tanda takaran gula kurang atau tutupnya kurang rapat.',
       gambar: 'simpan'
     },
     {
       judul: 'Saring dan panen',
-      isi: 'Setelah <b>3 bulan</b>, saring cairannya. Eco-enzyme yang jadi berwarna <b>cokelat tua dan beraroma asam segar</b> seperti cuka. Ampasnya jangan dibuang — benamkan ke tanah sebagai kompos atau jadikan starter adonan berikutnya.',
+      isi: 'Setelah genap <b>3 bulan</b>, saring cairannya memakai kain bersih atau saringan halus. Eco-enzyme yang sudah jadi berwarna <b>cokelat tua dan beraroma asam segar</b> seperti cuka, itu tandanya berhasil. Kalau baunya busuk atau menyengat tidak sedap, kemungkinan prosesnya gagal, biasanya karena bahan yang dipakai tidak cocok atau tutupnya kurang rapat. Ampasnya jangan dibuang, masih berguna: benamkan ke tanah sebagai kompos, atau simpan sedikit untuk jadi starter (bibit fermentasi) supaya adonan berikutnya lebih cepat jadi.',
       gambar: 'saring'
     }
   ];

@@ -113,7 +113,7 @@
     {
       kategori: 'organik', emoji: '🥬', ikon: 'pilah',
       judul: 'Pisahkan sisa dapur sejak dari dapur',
-      kenapa: 'Kalau sampah dapur tercampur dari awal, semuanya jadi basah dan bau — barang yang sebenarnya masih bisa dijual pun ikut kotor dan tidak laku.',
+      kenapa: 'Kalau sampah dapur tercampur dari awal, semuanya jadi basah dan bau. Barang yang sebenarnya masih bisa dijual pun ikut kotor dan tidak laku.',
       cara: [
         'Sediakan satu wadah khusus dekat tempat masak, untuk kulit buah, sisa sayur, ampas kopi, dan cangkang telur.',
         'Kosongkan wadah ini setiap hari supaya tidak bau.',
@@ -139,14 +139,14 @@
       cara: [
         'Gali lubang kecil (biopori) atau parit dangkal (rorak) di antara tanaman.',
         'Timbun daun kering dan sampah kebun ke dalamnya sedikit demi sedikit.',
-        'Biarkan melapuk sendiri — tidak perlu dibalik atau diaduk.'
+        'Biarkan melapuk sendiri, tidak perlu dibalik atau diaduk.'
       ],
       nilai: 'Tanah jadi lebih subur, dan lubangnya membantu air hujan meresap sebagai cadangan air saat kemarau.'
     },
     {
       kategori: 'organik', emoji: '🐔', ikon: 'ternak',
       judul: 'Sisa sayur untuk pakan ternak',
-      kenapa: 'Banyak sisa sayur dan nasi masih layak makan — sayang kalau langsung dibuang, padahal ternak di rumah butuh pakan.',
+      kenapa: 'Banyak sisa sayur dan nasi masih layak makan, sayang kalau langsung dibuang, padahal ternak di rumah butuh pakan.',
       cara: [
         'Kumpulkan sisa sayur dan nasi yang masih segar, pisahkan dari yang basi.',
         'Berikan langsung ke ayam, bebek, atau kambing.',
@@ -157,7 +157,7 @@
     {
       kategori: 'organik', emoji: '🚫', ikon: 'stop-bakar',
       judul: 'Jangan bakar sampah kebun',
-      kenapa: 'Asap dari bakar daun dan brangkasan memanaskan udara dan bikin sesak napas — padahal sampahnya sendiri sebenarnya berharga.',
+      kenapa: 'Asap dari bakar daun dan brangkasan memanaskan udara dan bikin sesak napas, padahal sampahnya sendiri sebenarnya berharga.',
       cara: [
         'Kumpulkan daun dan brangkasan, jangan disulut api.',
         'Jadikan mulsa (ditebar di permukaan tanah) atau masukkan ke kompos/lubang biopori.',
@@ -180,7 +180,7 @@
     {
       kategori: 'plastik', emoji: '🍶', ikon: 'jual',
       judul: 'Botol & gelas plastik: kumpulkan lalu jual',
-      kenapa: 'Botol dan gelas plastik bersih termasuk sampah yang paling dicari pengepul — sayang kalau dicampur begitu saja dengan sampah lain.',
+      kenapa: 'Botol dan gelas plastik bersih termasuk sampah yang paling dicari pengepul, sayang kalau dicampur begitu saja dengan sampah lain.',
       cara: [
         'Bilas botol/gelas plastik sampai bersih dari sisa minuman.',
         'Keringkan supaya tidak berjamur dan lebih ringan.',
@@ -201,11 +201,11 @@
     {
       kategori: 'plastik', emoji: '🧱', ikon: 'ecobrick',
       judul: 'Sachet & plastik kotor jadi ecobrick',
-      kenapa: 'Bungkus kopi, mi instan, dan plastik kecil kotor sulit dijual karena tidak ada yang mau menerimanya — tapi bisa ditahan supaya tidak berserakan.',
+      kenapa: 'Bungkus kopi, mi instan, dan plastik kecil kotor sulit dijual karena tidak ada yang mau menerimanya, tapi bisa ditahan supaya tidak berserakan.',
       cara: [
         'Cuci dan keringkan bungkus plastik kecil sampai benar-benar kering.',
         'Potong kecil-kecil, lalu padatkan ke dalam botol plastik bekas.',
-        'Tekan terus sampai botolnya keras dan padat penuh — itulah ecobrick.'
+        'Tekan terus sampai botolnya keras dan padat penuh. Itulah ecobrick.'
       ],
       nilai: 'Ecobrick yang sudah jadi bisa dirangkai jadi kursi, meja, atau pot tanaman.'
     },
@@ -214,18 +214,18 @@
     {
       kategori: 'kertas', emoji: '📦', ikon: 'jual',
       judul: 'Kardus & kertas kering: jual ke loak',
-      kenapa: 'Kardus dan kertas kering termasuk sampah bernilai tinggi — asal disimpan rapi dan kering, pasti laku dijual.',
+      kenapa: 'Kardus dan kertas kering termasuk sampah bernilai tinggi, asal disimpan rapi dan kering, pasti laku dijual.',
       cara: [
         'Simpan kardus dan kertas di tempat kering, jangan sampai kena hujan.',
         'Lipat rapi dan ikat jadi satu supaya mudah ditimbang.',
         'Setor ke pengepul loak terdekat.'
       ],
-      nilai: 'Kardus/kertas yang basah nilainya turun jauh — menjaganya tetap kering saja sudah menaikkan harganya.'
+      nilai: 'Kardus/kertas yang basah nilainya turun jauh. Menjaganya tetap kering saja sudah menaikkan harganya.'
     },
     {
       kategori: 'kertas', emoji: '✏️', ikon: 'pakai-ulang',
       judul: 'Pakai ulang kertas satu sisi',
-      kenapa: 'Kertas yang baru kepakai satu sisi sebenarnya masih separuh kosong — sayang kalau langsung dibuang.',
+      kenapa: 'Kertas yang baru kepakai satu sisi sebenarnya masih separuh kosong, sayang kalau langsung dibuang.',
       cara: [
         'Sisihkan kertas bekas satu sisi di satu tumpukan khusus.',
         'Pakai untuk corat-coret, catatan belanja, atau latihan PR anak.',
@@ -248,7 +248,7 @@
     {
       kategori: 'kaca', emoji: '🫙', ikon: 'pakai-ulang',
       judul: 'Botol & toples kaca: pakai ulang',
-      kenapa: 'Wadah kaca itu kuat dan tahan lama — jauh lebih awet daripada wadah plastik sekali pakai.',
+      kenapa: 'Wadah kaca itu kuat dan tahan lama, jauh lebih awet daripada wadah plastik sekali pakai.',
       cara: [
         'Cuci bersih botol kecap, toples selai, atau botol kaca lain.',
         'Pakai lagi untuk menyimpan bumbu, benih, minyak, atau eco-enzyme.',
@@ -265,7 +265,7 @@
         'Pisahkan dari sampah lain supaya tidak berkarat bercampur.',
         'Setor ke pengepul logam/besi tua.'
       ],
-      nilai: 'Harga logam biasanya lebih tinggi dibanding sampah lain — lumayan buat tambahan uang belanja.'
+      nilai: 'Harga logam biasanya lebih tinggi dibanding sampah lain, lumayan buat tambahan uang belanja.'
     },
     {
       kategori: 'kaca', emoji: '🧤', ikon: 'hati-hati',
@@ -292,7 +292,7 @@
     {
       kategori: 'b3', emoji: '💡', ikon: 'b3-racun',
       judul: 'Lampu bekas: jangan dipecah',
-      kenapa: 'Lampu neon/TL dan bohlam hemat energi mengandung sedikit merkuri — uapnya berbahaya kalau lampunya remuk di dalam rumah.',
+      kenapa: 'Lampu neon/TL dan bohlam hemat energi mengandung sedikit merkuri, uapnya berbahaya kalau lampunya remuk di dalam rumah.',
       cara: [
         'Bungkus lampu bekas utuh dengan kertas atau kardus tebal, jangan sampai pecah.',
         'Simpan di tempat aman, jauh dari jangkauan anak-anak.',
@@ -316,7 +316,7 @@
       cara: [
         'Tampung oli bekas di jerigen tertutup rapat, jangan disiram ke tanah/selokan.',
         'Bawa ke bengkel langganan atau pengepul oli.',
-        'Tanyakan dulu — banyak bengkel yang justru mau membelinya.'
+        'Tanyakan dulu, banyak bengkel yang justru mau membelinya.'
       ],
       nilai: 'Oli bekas termasuk yang dibeli, bukan cuma diterima gratis.'
     },
@@ -334,7 +334,7 @@
     {
       kategori: 'b3', emoji: '📱', ikon: 'stop-bakar',
       judul: 'Elektronik rusak: jangan dibakar',
-      kenapa: 'HP rusak, charger, remote, dan kabel mengandung bahan berharga sekaligus berbahaya — membakarnya melepas asap beracun.',
+      kenapa: 'HP rusak, charger, remote, dan kabel mengandung bahan berharga sekaligus berbahaya. Membakarnya melepas asap beracun.',
       cara: [
         'Jangan pernah membakar elektronik rusak.',
         'Kumpulkan di satu tempat, terpisah dari sampah lain.',
@@ -369,9 +369,9 @@
       judul: 'Prinsipnya: pilah, kurangi, olah',
       kenapa: 'Kalau langkah-langkah ini dijalankan berurutan, sampah yang benar-benar terbuang sia-sia (residu) jadi sedikit sekali.',
       cara: [
-        'Kurangi sampah sejak awal — bawa tas sendiri, tolak kemasan berlebih.',
+        'Kurangi sampah sejak awal: bawa tas sendiri, tolak kemasan berlebih.',
         'Pakai ulang barang yang masih bisa dipakai.',
-        'Jual/daur ulang yang bernilai — plastik, kertas, kaca, logam.',
+        'Jual/daur ulang yang bernilai: plastik, kertas, kaca, logam.',
         'Olah yang organik jadi kompos atau pakan ternak.'
       ]
     }
@@ -393,7 +393,7 @@
       definisi: 'Sampah berbahan dasar plastik (polimer sintetis) yang tidak bisa membusuk dan butuh ratusan tahun untuk terurai sendiri.',
       ciri: [
         'Ringan, licin, tidak menyerap air.',
-        'Tidak membusuk — kalau dibakar melepas asap beracun.',
+        'Tidak membusuk. Kalau dibakar melepas asap beracun.',
         'Sebagian punya nilai jual kalau bersih (botol, gelas plastik).'
       ],
       contoh: ['Kantong kresek', 'Botol & gelas plastik', 'Bungkus sachet mi/kopi', 'Sedotan', 'Kemasan sabun/sampo', 'Mainan/ember plastik rusak']
@@ -417,7 +417,7 @@
       contoh: ['Botol kecap/sirup', 'Toples selai', 'Pecahan kaca jendela', 'Kaleng susu/makanan', 'Besi tua & paku bekas', 'Panci/wajan rusak']
     },
     b3: {
-      definisi: 'Bahan Berbahaya dan Beracun — sampah yang mengandung zat yang bisa meracuni tanah, air, dan tubuh manusia kalau salah dibuang.',
+      definisi: 'Bahan Berbahaya dan Beracun, sampah yang mengandung zat yang bisa meracuni tanah, air, dan tubuh manusia kalau salah dibuang.',
       ciri: [
         'TIDAK boleh dicampur sampah biasa, apalagi dibakar.',
         'Perlu wadah tertutup dan penanganan khusus.',
@@ -426,7 +426,7 @@
       contoh: ['Baterai bekas', 'Lampu neon/bohlam bekas', 'Obat kadaluarsa', 'Oli bekas kendaraan', 'Kemasan pestisida/pupuk kimia', 'Aki & elektronik rusak']
     },
     residu: {
-      definisi: 'Sampah sisa yang sudah tidak bisa dipilah lagi — bukan organik, tidak bisa didaur ulang, dan tidak punya nilai jual.',
+      definisi: 'Sampah sisa yang sudah tidak bisa dipilah lagi: bukan organik, tidak bisa didaur ulang, dan tidak punya nilai jual.',
       ciri: [
         'Biasanya campuran bahan atau terlalu kotor untuk dipisah.',
         'Jumlahnya seharusnya paling sedikit kalau pemilahan sudah dilakukan dengan baik.',
