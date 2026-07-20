@@ -628,26 +628,7 @@ fieldset.terlewati .pil-lewati { background: var(--tanah-pucat); color: #543A26;
 }
 .sticky-emisi-satuan { font-size: 0.78rem; color: var(--teks-samar); }
 
-/* ============ AKORDEON (Kalkulator Karbon) ----------
-   Pakai ulang pola .kartu-tip/.tip-kepala/.tip-badan yang
-   sudah ada di Tips & FAQ, dipasang pada <fieldset>. */
-fieldset.akordeon-karbon { border: 1px solid var(--garis); }
-fieldset.akordeon-karbon .tip-kepala { width: 100%; }
-fieldset.akordeon-karbon .tip-badan-isi { padding: 0 16px 16px; }
-fieldset.akordeon-karbon.terbuka .tip-badan { max-height: 900px; }  /* seksi Memasak cukup panjang */
-.akordeon-kepala .nomor-langkah { flex: none; }
-.akordeon-kepala h4 {
-  flex: 1; text-align: left;
-  color: var(--hijau-jati); font-size: 1.02rem;
-}
-.ringkasan-akordeon {
-  flex: none; max-width: 38%;
-  font-size: 0.78rem; font-weight: 700; color: var(--teks-samar);
-  text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-fieldset.akordeon-karbon.terbuka .ringkasan-akordeon { display: none; }
-
-/* Rincian / Tips / Laporan hasil — collapsible, tertutup bawaan */
+/* Laporan bulanan — collapsible, tertutup bawaan (rincian/tips hasil kini selalu tampil) */
 .hasil-akordeon .tip-kepala h4 { flex: 1; text-align: left; }
 .hasil-akordeon .tip-badan-isi { padding: 0 16px 16px; }
 .hasil-akordeon.terbuka .tip-badan { max-height: 900px; }

@@ -377,6 +377,100 @@
     }
   ];
 
+  /* Penjelasan tiap JENIS sampah (definisi/ciri/contoh) — beda dari
+     Tips Kelola Sampah di bawahnya yang isinya CARA menangani. */
+  var INFO_JENIS = {
+    organik: {
+      definisi: 'Sampah yang berasal dari makhluk hidup (tumbuhan atau hewan) dan bisa membusuk/terurai sendiri secara alami.',
+      ciri: [
+        'Mudah membusuk dan berbau kalau dibiarkan lama.',
+        'Berasal dari sisa makanan, tumbuhan, atau hewan.',
+        'Bisa diolah jadi kompos, pakan ternak, atau eco-enzyme.'
+      ],
+      contoh: ['Sisa sayur & kulit buah', 'Ampas kopi/teh', 'Nasi basi', 'Daun & ranting kering', 'Sisa ikan/tulang', 'Kotoran ternak']
+    },
+    plastik: {
+      definisi: 'Sampah berbahan dasar plastik (polimer sintetis) yang tidak bisa membusuk dan butuh ratusan tahun untuk terurai sendiri.',
+      ciri: [
+        'Ringan, licin, tidak menyerap air.',
+        'Tidak membusuk — kalau dibakar melepas asap beracun.',
+        'Sebagian punya nilai jual kalau bersih (botol, gelas plastik).'
+      ],
+      contoh: ['Kantong kresek', 'Botol & gelas plastik', 'Bungkus sachet mi/kopi', 'Sedotan', 'Kemasan sabun/sampo', 'Mainan/ember plastik rusak']
+    },
+    kertas: {
+      definisi: 'Sampah berbahan dasar serat kayu/kertas. Bisa didaur ulang selama tidak basah, berminyak, atau berlapis plastik mengkilap.',
+      ciri: [
+        'Mudah sobek dan menyerap air.',
+        'Yang kering & bersih bernilai jual tinggi.',
+        'Yang kotor/berminyak sebaiknya masuk kompos, bukan dijual.'
+      ],
+      contoh: ['Kardus bekas', 'Koran & majalah', 'Buku tulis bekas', 'Kertas HVS', 'Kantong kertas', 'Kertas nasi/tisu (kotor → kompos)']
+    },
+    kaca: {
+      definisi: 'Sampah dari bahan kaca atau berbagai jenis logam. Umumnya tidak membusuk, tapi bisa didaur ulang berkali-kali tanpa kehilangan kualitas.',
+      ciri: [
+        'Berat dan keras; kaca mudah pecah dan tajam.',
+        'Hampir selalu punya nilai jual ke pengepul.',
+        'Pecahan kaca perlu dibungkus rapat sebelum dibuang.'
+      ],
+      contoh: ['Botol kecap/sirup', 'Toples selai', 'Pecahan kaca jendela', 'Kaleng susu/makanan', 'Besi tua & paku bekas', 'Panci/wajan rusak']
+    },
+    b3: {
+      definisi: 'Bahan Berbahaya dan Beracun — sampah yang mengandung zat yang bisa meracuni tanah, air, dan tubuh manusia kalau salah dibuang.',
+      ciri: [
+        'TIDAK boleh dicampur sampah biasa, apalagi dibakar.',
+        'Perlu wadah tertutup dan penanganan khusus.',
+        'Diserahkan ke titik pengumpulan B3 atau bank sampah, bukan tempat sampah rumah.'
+      ],
+      contoh: ['Baterai bekas', 'Lampu neon/bohlam bekas', 'Obat kadaluarsa', 'Oli bekas kendaraan', 'Kemasan pestisida/pupuk kimia', 'Aki & elektronik rusak']
+    },
+    residu: {
+      definisi: 'Sampah sisa yang sudah tidak bisa dipilah lagi — bukan organik, tidak bisa didaur ulang, dan tidak punya nilai jual.',
+      ciri: [
+        'Biasanya campuran bahan atau terlalu kotor untuk dipisah.',
+        'Jumlahnya seharusnya paling sedikit kalau pemilahan sudah dilakukan dengan baik.',
+        'Tetap harus dibuang rapi ke tempat sampah, bukan dibakar/dibuang sembarangan.'
+      ],
+      contoh: ['Popok & pembalut bekas', 'Puntung rokok', 'Styrofoam kotor', 'Tisu bekas', 'Plastik sangat kotor', 'Sisa sapuan/debu']
+    }
+  };
+
+  var wadahInfo = document.getElementById('info-jenis-sampah');
+  if (wadahInfo) {
+    wadahInfo.innerHTML = KATEGORI.map(function (kat) {
+      var info = INFO_JENIS[kat.id];
+      var ciriHtml = info.ciri.map(function (c) { return '<li>' + c + '</li>'; }).join('');
+      var contohHtml = info.contoh.map(function (c) { return '<li>' + c + '</li>'; }).join('');
+      return (
+        '<div class="kartu kartu-tip">' +
+          '<button type="button" class="tip-kepala" aria-expanded="false">' +
+            '<span class="tip-emoji">' + kat.emoji + '</span>' +
+            '<h4>' + kat.label + '</h4>' +
+            svgPanah() +
+          '</button>' +
+          '<div class="tip-badan">' +
+            '<div class="tip-badan-isi">' +
+              '<p>' + info.definisi + '</p>' +
+              '<p class="tip-label">Ciri-ciri</p>' +
+              '<ul class="tip-langkah">' + ciriHtml + '</ul>' +
+              '<p class="tip-label">Contoh sehari-hari</p>' +
+              '<ul class="tip-langkah">' + contohHtml + '</ul>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join('');
+
+    wadahInfo.addEventListener('click', function (e) {
+      var kepala = e.target.closest('.tip-kepala');
+      if (!kepala) return;
+      var kartu = kepala.closest('.kartu-tip');
+      var terbuka = kartu.classList.toggle('terbuka');
+      kepala.setAttribute('aria-expanded', terbuka);
+    });
+  }
+
   var wadah = document.getElementById('daftar-sampah');
   if (!wadah) return;
 

@@ -10,7 +10,7 @@
      lewat localStorage supaya ada label waktu pembaruan.
    ============================================================ */
 
-var VERSI_CACHE = 'gama-hijau-v20';
+var VERSI_CACHE = 'gama-hijau-v21';
 var CACHE_FONT = 'gama-font-v1';
 
 var ASET_APLIKASI = [
@@ -75,7 +75,7 @@ self.addEventListener('notificationclick', function (event) {
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (daftar) {
       for (var i = 0; i < daftar.length; i++) {
         if ('focus' in daftar[i]) {
-          daftar[i].navigate && daftar[i].navigate('#jadwal');
+          daftar[i].navigate && daftar[i].navigate('./#jadwal');
           return daftar[i].focus();
         }
       }
