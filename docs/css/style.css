@@ -410,6 +410,11 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: var(-
 }
 
 .kartu-info { border-left: 6px solid var(--hijau-muda-jagung); }
+.kartu-info h3 + h3 { margin-top: 0; }
+.pemisah-info {
+  border: none; border-top: 1px dashed var(--garis);
+  margin: 14px 0; opacity: 0.8;
+}
 
 /* Kartu beraksen kiri → sudut organik (rata di sisi aksen) */
 .kartu-info, .kartu-peringatan, .saran-tani, .kartu-progres,
@@ -605,6 +610,48 @@ fieldset.terlewati .pil-lewati { background: var(--tanah-pucat); color: #543A26;
 
 .batang-lewati .batang-label b { color: var(--teks-samar); font-style: italic; }
 
+/* ============ ANGKA EMISI STICKY (Karbon) ============ */
+.sticky-emisi {
+  position: sticky; top: 0; z-index: 40;
+  display: flex; align-items: baseline; justify-content: center; gap: 8px;
+  background: var(--permukaan);
+  border: 1px solid var(--garis);
+  border-radius: 0 0 var(--radius-kecil) var(--radius-kecil);
+  padding: 8px 16px;
+  margin: 0 -14px 14px;
+  box-shadow: var(--bayang);
+}
+.sticky-emisi-angka {
+  font-family: var(--font-judul); font-weight: 900;
+  font-size: 1.5rem; color: var(--hijau-jati);
+  font-variant-numeric: tabular-nums;
+}
+.sticky-emisi-satuan { font-size: 0.78rem; color: var(--teks-samar); }
+
+/* ============ AKORDEON (Kalkulator Karbon) ----------
+   Pakai ulang pola .kartu-tip/.tip-kepala/.tip-badan yang
+   sudah ada di Tips & FAQ, dipasang pada <fieldset>. */
+fieldset.akordeon-karbon { border: 1px solid var(--garis); }
+fieldset.akordeon-karbon .tip-kepala { width: 100%; }
+fieldset.akordeon-karbon .tip-badan-isi { padding: 0 16px 16px; }
+fieldset.akordeon-karbon.terbuka .tip-badan { max-height: 900px; }  /* seksi Memasak cukup panjang */
+.akordeon-kepala .nomor-langkah { flex: none; }
+.akordeon-kepala h4 {
+  flex: 1; text-align: left;
+  color: var(--hijau-jati); font-size: 1.02rem;
+}
+.ringkasan-akordeon {
+  flex: none; max-width: 38%;
+  font-size: 0.78rem; font-weight: 700; color: var(--teks-samar);
+  text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+fieldset.akordeon-karbon.terbuka .ringkasan-akordeon { display: none; }
+
+/* Rincian / Tips / Laporan hasil — collapsible, tertutup bawaan */
+.hasil-akordeon .tip-kepala h4 { flex: 1; text-align: left; }
+.hasil-akordeon .tip-badan-isi { padding: 0 16px 16px; }
+.hasil-akordeon.terbuka .tip-badan { max-height: 900px; }
+
 .grup-toggle-durasi {
   display: inline-flex; gap: 4px;
   background: var(--kabut-pagi);
@@ -746,7 +793,7 @@ fieldset.terlewati .pil-lewati { background: var(--tanah-pucat); color: #543A26;
   max-height: 0; overflow: hidden;
   transition: max-height 0.35s ease;
 }
-.kartu-tip.terbuka .tip-badan { max-height: 500px; }
+.kartu-tip.terbuka .tip-badan { max-height: 900px; }  /* tips Sampah kini 3 bagian + ilustrasi, lebih panjang */
 .tip-badan-isi { padding: 0 16px 14px 72px; }
 .kartu-tip p { font-size: 0.92rem; }
 @media (max-width: 430px) {
@@ -759,6 +806,27 @@ fieldset.terlewati .pil-lewati { background: var(--tanah-pucat); color: #543A26;
   padding: 3px 11px; border-radius: 999px;
 }
 .tip-aksi { margin-top: 10px; }
+
+/* Isi tip diperkaya: label bagian + langkah bernomor + ilustrasi */
+.tip-label {
+  margin-top: 10px; margin-bottom: 2px;
+  font-weight: 800; font-size: 0.72rem;
+  color: var(--tanah-basah); text-transform: uppercase; letter-spacing: 0.03em;
+}
+.tip-label:first-of-type { margin-top: 0; }
+.tip-langkah { margin: 2px 0 0; padding-left: 20px; }
+.tip-langkah li { font-size: 0.92rem; margin-bottom: 4px; }
+.tip-ilustrasi { display: flex; justify-content: center; margin-bottom: 8px; }
+.tip-ilustrasi-img { width: 68px; height: 68px; }
+
+/* Kisi kategori Sampah — pengganti baris chip yang terpotong di layar sempit */
+.kisi-kategori { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 4px; }
+@media (min-width: 420px) { .kisi-kategori { grid-template-columns: repeat(3, 1fr); } }
+.kotak-kategori { min-height: 96px; justify-content: center; }
+.kotak-kategori-emoji { font-size: 22px; }
+.ikon-latar-terracotta { background: var(--gold-pucat); }
+
+.baris-kembali-kategori { margin-bottom: 6px; }
 
 /* ============ CUACA ============ */
 .peringatan-offline {
@@ -1041,6 +1109,44 @@ fieldset.terlewati .pil-lewati { background: var(--tanah-pucat); color: #543A26;
   text-align: center; color: var(--teks-samar);
   font-size: 0.92rem; padding: 14px 6px;
 }
+
+/* Baris ringkas untuk seksi Hari ini/Mendatang/Lewat saat kosong —
+   satu baris pendek, bukan blok judul-bagian penuh. */
+.jadwal-baris-ringkas {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 4px; margin-bottom: 8px;
+  font-size: 0.85rem; color: var(--teks-samar);
+}
+.jadwal-baris-ringkas b { color: var(--tanah-basah); font-weight: 800; }
+.jadwal-semua-kosong {
+  text-align: center; color: var(--teks-samar);
+  font-size: 0.92rem; padding: 20px 12px;
+}
+
+/* Banner ringkas (izin notifikasi & ajakan Kalender Tanam) —
+   satu-dua baris + tombol kecil + tombol tutup, bisa di-dismiss. */
+.banner-jadwal {
+  position: relative;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  background: var(--kuning-pucat);
+  border: 1px solid var(--kuning-jagung);
+  border-radius: var(--radius-kecil);
+  padding: 10px 46px 10px 12px;
+  margin-bottom: 12px;
+  font-size: 0.86rem;
+}
+.banner-ikon { flex: none; font-size: 1.25rem; line-height: 1; }
+.banner-teks { flex: 1; min-width: 140px; color: var(--teks); line-height: 1.35; }
+.banner-aksi { flex: none; }
+.banner-tutup {
+  position: absolute; top: 3px; right: 3px;
+  width: 44px; height: 44px;
+  display: grid; place-items: center;
+  background: none; border: none; color: #6E5410;
+  border-radius: 50%;
+}
+.banner-tutup svg { width: 16px; height: 16px; }
+.banner-jadwal.tersembunyi { display: none; }
 .lencana-hari {
   display: inline-block;
   background: var(--kuning-jagung); color: #3D2E06;

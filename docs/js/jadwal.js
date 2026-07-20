@@ -49,9 +49,23 @@
   var tombolTambah = document.getElementById('tombol-tambah-jadwal');
   var tombolBatal = document.getElementById('tombol-batal-jadwal');
   var wadahIzin = document.getElementById('izin-notifikasi');
-  var wadahHariIni = document.getElementById('jadwal-hari-ini');
-  var wadahMendatang = document.getElementById('jadwal-mendatang');
-  var wadahLewat = document.getElementById('jadwal-lewat');
+  var wadahDaftar = document.getElementById('jadwal-daftar');
+
+  /* ---------- Banner yang bisa ditutup (status tersimpan lokal) ---------- */
+  var KUNCI_TUTUP_IZIN = 'gama_jadwal_tutup_izin';
+  var KUNCI_TUTUP_KALENDER = 'gama_jadwal_tutup_kalender';
+
+  var bannerKalender = document.getElementById('banner-kalender');
+  var tutupBannerKalender = document.getElementById('tutup-banner-kalender');
+  if (bannerKalender && localStorage.getItem(KUNCI_TUTUP_KALENDER)) {
+    bannerKalender.classList.add('tersembunyi');
+  }
+  if (tutupBannerKalender) {
+    tutupBannerKalender.addEventListener('click', function () {
+      bannerKalender.classList.add('tersembunyi');
+      try { localStorage.setItem(KUNCI_TUTUP_KALENDER, '1'); } catch (e) { /* abaikan */ }
+    });
+  }
 
   /* ---------- Form buka / tutup ---------- */
   function bukaForm(item) {
@@ -199,17 +213,29 @@
       else lewat.push(item);
     });
 
-    wadahHariIni.innerHTML = hariIni.length
-      ? hariIni.map(function (x) { return barisItem(x, false); }).join('')
-      : '<p class="jadwal-kosong">Tidak ada kegiatan hari ini. Selamat beristirahat, atau tambah rencana baru.</p>';
+    if (!wadahDaftar) return;
 
-    wadahMendatang.innerHTML = mendatang.length
-      ? mendatang.map(function (x) { return barisItem(x, true); }).join('')
-      : '<p class="jadwal-kosong">Belum ada rencana. Ketuk "Tambah Kegiatan" atau salin dari Kalender Tanam.</p>';
+    // Semuanya kosong → satu pesan ringkas, tanpa tiga blok judul terpisah
+    if (!hariIni.length && !mendatang.length && !lewat.length) {
+      wadahDaftar.innerHTML =
+        '<p class="jadwal-semua-kosong">Belum ada jadwal tani. Ketuk <b>"Tambah Kegiatan"</b> di atas, atau salin dari Kalender Tanam.</p>';
+      return;
+    }
 
-    wadahLewat.innerHTML = lewat.length
-      ? lewat.slice(-10).reverse().map(function (x) { return barisItem(x, true); }).join('')
-      : '<p class="jadwal-kosong">Belum ada riwayat.</p>';
+    function seksi(judul, daftarIsi, tampilkanTanggal, teksKosong, dipotong) {
+      if (daftarIsi.length) {
+        var isi = dipotong ? daftarIsi.slice(-10).reverse() : daftarIsi;
+        return '<h3 class="judul-bagian">' + judul + '</h3>' +
+          isi.map(function (x) { return barisItem(x, tampilkanTanggal); }).join('');
+      }
+      // Kosong tapi bukan semuanya kosong → satu baris pendek, bukan blok besar
+      return '<p class="jadwal-baris-ringkas"><b>' + judul + ':</b> ' + teksKosong + '</p>';
+    }
+
+    wadahDaftar.innerHTML =
+      seksi('Hari ini', hariIni, false, 'tidak ada kegiatan.', false) +
+      seksi('Mendatang', mendatang, true, 'belum ada rencana.', false) +
+      seksi('Lewat & selesai', lewat, true, 'belum ada riwayat.', true);
   }
 
   /* ---------- Aksi pada item (selesai / ubah / hapus) ---------- */
@@ -244,47 +270,65 @@
     }
   });
 
-  /* ---------- Izin notifikasi (dengan penjelasan dulu) ---------- */
+  /* ---------- Izin notifikasi (banner ringkas, bisa ditutup) ---------- */
+  function bungkusBannerIzin(ikon, teks, tombolAksiHtml) {
+    return (
+      '<div class="banner-jadwal" id="banner-izin">' +
+        '<span class="banner-ikon" aria-hidden="true">' + ikon + '</span>' +
+        '<span class="banner-teks">' + teks + '</span>' +
+        (tombolAksiHtml || '') +
+        '<button type="button" class="banner-tutup" id="tutup-banner-izin" aria-label="Tutup, jangan tampilkan lagi">' +
+          '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6 L18 18 M18 6 L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>' +
+        '</button>' +
+      '</div>'
+    );
+  }
+
+  function pasangTutupBannerIzin() {
+    var tombol = document.getElementById('tutup-banner-izin');
+    if (!tombol) return;
+    tombol.addEventListener('click', function () {
+      wadahIzin.innerHTML = '';
+      try { localStorage.setItem(KUNCI_TUTUP_IZIN, '1'); } catch (e) { /* abaikan */ }
+    });
+  }
+
   function gambarIzin() {
+    if (localStorage.getItem(KUNCI_TUTUP_IZIN)) { wadahIzin.innerHTML = ''; return; }
+
     if (!('Notification' in window)) {
-      wadahIzin.innerHTML =
-        '<div class="kartu kartu-izin">' +
-          '<p>HP ini belum mendukung pengingat otomatis. Tenang — daftar <b>Hari ini</b> di bawah selalu menampilkan kegiatan Anda setiap membuka aplikasi.</p>' +
-        '</div>';
+      // HP tak mendukung — fallback "Hari ini" di bawah sudah cukup, tak perlu banner
+      wadahIzin.innerHTML = '';
       return;
     }
 
     if (Notification.permission === 'granted') {
-      wadahIzin.innerHTML =
-        '<div class="kartu kartu-izin">' +
-          '<p class="izin-status">✓ Pengingat sudah menyala.</p>' +
-          '<p class="keterangan">Pengingat muncul ' + JEDA_INGAT_MENIT + ' menit sebelum waktu kegiatan, selama aplikasi sedang terbuka. Daftar "Hari ini" di bawah juga selalu bisa dilihat.</p>' +
-        '</div>';
+      wadahIzin.innerHTML = bungkusBannerIzin('✓', '<b>Pengingat menyala.</b> Muncul ' + JEDA_INGAT_MENIT + ' menit sebelum waktunya, selama aplikasi terbuka.', '');
+      pasangTutupBannerIzin();
       return;
     }
 
     if (Notification.permission === 'denied') {
-      wadahIzin.innerHTML =
-        '<div class="kartu kartu-izin">' +
-          '<p><b>Pengingat belum diizinkan.</b> Kalau ingin diingatkan otomatis, buka pengaturan HP → aplikasi/peramban → izinkan notifikasi untuk aplikasi ini. Tanpa itu pun, daftar <b>Hari ini</b> tetap tampil.</p>' +
-        '</div>';
+      wadahIzin.innerHTML = bungkusBannerIzin('🔕', 'Pengingat belum diizinkan. Daftar "Hari ini" di bawah tetap tampil.', '');
+      pasangTutupBannerIzin();
       return;
     }
 
-    // permission === 'default' → jelaskan dulu, minta izin saat tombol diketuk
-    wadahIzin.innerHTML =
-      '<div class="kartu kartu-izin">' +
-        '<h3>Mau diingatkan?</h3>' +
-        '<p>Aplikasi bisa memunculkan <b>pengingat di layar HP</b> menjelang waktu kegiatan tani Anda — tanpa internet, tanpa dikirim ke mana-mana. HP akan bertanya "izinkan notifikasi?", pilih <b>Izinkan</b>.</p>' +
-        '<button type="button" class="tombol tombol-utama tombol-kecil" id="tombol-izin">Nyalakan Pengingat</button>' +
-      '</div>';
+    // permission === 'default' → jelaskan singkat, minta izin saat tombol diketuk
+    wadahIzin.innerHTML = bungkusBannerIzin(
+      '🔔', 'Mau diingatkan lewat notifikasi HP menjelang jadwal tani?',
+      '<button type="button" class="tombol tombol-utama tombol-kecil banner-aksi" id="tombol-izin">Nyalakan</button>'
+    );
+    pasangTutupBannerIzin();
     var tombolIzin = document.getElementById('tombol-izin');
-    tombolIzin.addEventListener('click', function () {
-      Notification.requestPermission().then(function () {
-        gambarIzin();
-        cekPengingat();
+    if (tombolIzin) {
+      tombolIzin.addEventListener('click', function () {
+        Notification.requestPermission().then(function () {
+          gambarIzin();
+          cekPengingat();
+        });
       });
-    });
+    }
   }
 
   /* ---------- Pengingat lokal ----------

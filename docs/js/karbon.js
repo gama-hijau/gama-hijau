@@ -242,20 +242,38 @@
         '<p class="banding-teks">' + teksBanding + '</p>' +
         teksPerubahan +
       '</div>' +
-      '<div class="kartu">' +
-        '<h3>Dari mana emisinya?</h3>' +
-        '<p class="keterangan" style="margin-bottom:4px">Rincian hari ini:</p>' +
-        '<div class="batang-rincian">' + barisBatang + '</div>' +
+      '<div class="kartu kartu-tip hasil-akordeon">' +
+        '<button type="button" class="tip-kepala" aria-expanded="false">' +
+          '<h4>Dari mana emisinya?</h4>' +
+          '<svg class="tip-panah" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9 L12 15 L18 9" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+        '</button>' +
+        '<div class="tip-badan"><div class="tip-badan-isi">' +
+          '<p class="keterangan" style="margin-bottom:4px">Rincian hari ini:</p>' +
+          '<div class="batang-rincian">' + barisBatang + '</div>' +
+        '</div></div>' +
       '</div>' +
-      '<div class="kartu">' +
-        '<h3>Cara mudah menguranginya</h3>' +
-        '<ul class="daftar-saran">' + barisSaran + '</ul>' +
+      '<div class="kartu kartu-tip hasil-akordeon">' +
+        '<button type="button" class="tip-kepala" aria-expanded="false">' +
+          '<h4>Cara mudah menguranginya</h4>' +
+          '<svg class="tip-panah" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9 L12 15 L18 9" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+        '</button>' +
+        '<div class="tip-badan"><div class="tip-badan-isi">' +
+          '<ul class="daftar-saran">' + barisSaran + '</ul>' +
+        '</div></div>' +
       '</div>';
 
     if (gulirKeHasil) {
       wadahHasil.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
+
+  wadahHasil.addEventListener('click', function (e) {
+    var tombol = e.target.closest('.hasil-akordeon .tip-kepala');
+    if (!tombol) return;
+    var kartu = tombol.closest('.hasil-akordeon');
+    var terbuka = kartu.classList.toggle('terbuka');
+    tombol.setAttribute('aria-expanded', terbuka);
+  });
 
   /* ============================================================
      Rangkuman bulanan (dari catatan harian yang benar-benar diisi)
@@ -355,9 +373,14 @@
     }
 
     wadahLaporan.innerHTML =
-      '<div class="kartu kartu-laporan">' +
-        '<h3>Laporan ' + namaBulan(bulanKini) + '</h3>' +
-        isiKini + isiLalu +
+      '<div class="kartu kartu-tip kartu-laporan hasil-akordeon">' +
+        '<button type="button" class="tip-kepala" aria-expanded="false">' +
+          '<h4>Laporan ' + namaBulan(bulanKini) + '</h4>' +
+          '<svg class="tip-panah" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9 L12 15 L18 9" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+        '</button>' +
+        '<div class="tip-badan"><div class="tip-badan-isi">' +
+          isiKini + isiLalu +
+        '</div></div>' +
       '</div>';
 
     var tombolLaporan = document.getElementById('tombol-bagikan-laporan');
@@ -405,6 +428,18 @@
     gambarLaporan();
   });
 
+  /* Toggle buka/tutup kartu Laporan Bulanan (didaftarkan sekali;
+     isi wadahLaporan berganti-ganti lewat gambarLaporan()). */
+  if (wadahLaporan) {
+    wadahLaporan.addEventListener('click', function (e) {
+      var tombolAkordeon = e.target.closest('.hasil-akordeon .tip-kepala');
+      if (!tombolAkordeon) return;
+      var kartu = tombolAkordeon.closest('.hasil-akordeon');
+      var terbuka = kartu.classList.toggle('terbuka');
+      tombolAkordeon.setAttribute('aria-expanded', terbuka);
+    });
+  }
+
   /* ---------- Preset cepat (listrik / gas / kayu bakar) ----------
      Pola yang sama di ketiganya: kolom angka bebas + tombol pilihan
      cepat yang mengisi angka itu. Warga tetap boleh ketik sendiri. */
@@ -439,6 +474,68 @@
     });
   });
 
+  /* ---------- Akordeon 4 seksi (hanya satu terbuka sekaligus) ----------
+     Reuse pola .kartu-tip/.tip-kepala/.tip-badan yang sudah ada;
+     seksi tertutup menampilkan ringkasan satu baris dari isiannya. */
+  var DAFTAR_AKORDEON = ['bagian-perjalanan', 'bagian-listrik', 'bagian-masak', 'bagian-makan'];
+
+  function bukaAkordeon(idTarget) {
+    DAFTAR_AKORDEON.forEach(function (id) {
+      var fs = document.getElementById(id);
+      if (!fs) return;
+      var terbuka = id === idTarget ? !fs.classList.contains('terbuka') : false;
+      fs.classList.toggle('terbuka', terbuka);
+      var tombol = fs.querySelector('.akordeon-kepala');
+      if (tombol) tombol.setAttribute('aria-expanded', terbuka);
+    });
+  }
+
+  form.addEventListener('click', function (e) {
+    var tombol = e.target.closest('.akordeon-kepala');
+    if (!tombol) return;
+    var fs = tombol.closest('fieldset');
+    if (fs) bukaAkordeon(fs.id);
+  });
+
+  function ringkasPerjalanan() {
+    var km = (parseFloat(document.getElementById('in-motor').value) || 0) +
+      (parseFloat(document.getElementById('in-mobil').value) || 0) +
+      (parseFloat(document.getElementById('in-umum').value) || 0);
+    return km > 0 ? km + ' km hari ini' : 'Belum ada perjalanan';
+  }
+  function ringkasListrik() {
+    if (document.getElementById('lewati-listrik').checked) return 'Tidak diisi';
+    var kwh = document.getElementById('in-listrik').value || 0;
+    return kwh + ' kWh/bulan';
+  }
+  function ringkasMasak() {
+    if (document.getElementById('lewati-masak').checked) return 'Tidak diisi';
+    var gas = document.getElementById('in-gas-kali').value || 0;
+    var kayu = document.getElementById('in-kayu-kali').value || 0;
+    if (gas == 0 && kayu == 0) return 'Tidak masak hari ini';
+    var bagian = [];
+    if (gas > 0) bagian.push('Gas ' + gas + '×');
+    if (kayu > 0) bagian.push('Kayu ' + kayu + '×');
+    return bagian.join(', ');
+  }
+  function ringkasMakan() {
+    if (document.getElementById('lewati-makan').checked) return 'Tidak diisi';
+    var LABEL = { 'makan-daging-merah': 'Daging merah', 'makan-ayam': 'Ayam', 'makan-ikan': 'Ikan', 'makan-sayur': 'Sayur' };
+    var dipilih = DAFTAR_MAKAN.filter(function (id) {
+      var el = document.getElementById(id);
+      return el && el.checked;
+    }).map(function (id) { return LABEL[id]; });
+    return dipilih.length ? dipilih.join(', ') : 'Belum dipilih';
+  }
+
+  function perbaruiRingkasanAkordeon() {
+    var el;
+    if ((el = document.getElementById('ringkasan-perjalanan'))) el.textContent = ringkasPerjalanan();
+    if ((el = document.getElementById('ringkasan-listrik'))) el.textContent = ringkasListrik();
+    if ((el = document.getElementById('ringkasan-masak'))) el.textContent = ringkasMasak();
+    if ((el = document.getElementById('ringkasan-makan'))) el.textContent = ringkasMakan();
+  }
+
   /* ---------- Saklar "tidak diisi" per bagian ---------- */
   var DAFTAR_LEWATI = [
     ['lewati-listrik', 'bagian-listrik'],
@@ -459,17 +556,22 @@
 
   /* ---------- Kalkulasi otomatis ---------- */
   function hitungLangsung() {
-    tampilkanHasil(hitung(), false);
+    var hasil = hitung();
+    tampilkanHasil(hasil, false);
+    var stickyAngka = document.getElementById('sticky-angka');
+    if (stickyAngka) stickyAngka.textContent = hasil.total.toFixed(1);
   }
 
   form.addEventListener('input', function () {
     perbaruiLewati();
     tandaiPresetAktif();
+    perbaruiRingkasanAkordeon();
     hitungLangsung();
   });
   form.addEventListener('change', function () {
     perbaruiLewati();
     tandaiPresetAktif();
+    perbaruiRingkasanAkordeon();
     hitungLangsung();
   });
 
@@ -543,5 +645,6 @@
   gambarRiwayat();
   gambarLaporan();
   perbaruiLewati();
+  perbaruiRingkasanAkordeon();
   hitungLangsung(); // hasil langsung tampil sejak halaman dibuka
 })();

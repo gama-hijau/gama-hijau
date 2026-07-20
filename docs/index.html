@@ -278,6 +278,10 @@
         <div class="kartu kartu-info">
           <h3>Kenapa perubahan iklim penting bagi kita?</h3>
           <p>Musim hujan makin sulit ditebak, sehingga jadwal tanam jagung dan padi tadah hujan sering meleset. Dengan mengurangi emisi dan bertani lebih cerdas, kita bantu bumi <em>sekaligus</em> hasil panen sendiri.</p>
+          <hr class="pemisah-info">
+          <h3>Kenapa perlu menghitung jejak karbon?</h3>
+          <p>Yang tidak diukur, susah dikurangi. Dengan mencatat tiap hari, kita jadi tahu kebiasaan mana yang paling boros emisi — dan angka kecil tiap rumah, kalau dijumlah satu kelurahan, jadi besar artinya.</p>
+          <button type="button" class="tombol tombol-kedua tombol-kecil" data-tuju="karbon" style="margin-top:10px">Mulai Hitung →</button>
         </div>
       </div>
     </section>
@@ -290,112 +294,153 @@
         <p>Isi kegiatan <b>hari ini</b> saja — simpan tiap hari, dan aplikasi merangkumnya jadi laporan bulanan yang jujur.</p>
       </div>
 
+      <div class="sticky-emisi" id="sticky-emisi">
+        <span class="sticky-emisi-angka" id="sticky-angka">0.0</span>
+        <span class="sticky-emisi-satuan">kg CO₂ hari ini</span>
+      </div>
+
       <form id="form-karbon" class="form-karbon" novalidate>
 
-        <fieldset class="kartu">
-          <legend><span class="nomor-langkah">1</span> Perjalanan hari ini</legend>
-          <div class="baris-input">
-            <label for="in-motor">Naik motor, berapa km hari ini?</label>
-            <div class="input-satuan">
-              <input type="number" id="in-motor" min="0" max="500" step="1" value="0" inputmode="numeric">
-              <span>km</span>
-            </div>
-          </div>
-          <div class="baris-input">
-            <label for="in-mobil">Naik mobil pribadi, berapa km hari ini?</label>
-            <div class="input-satuan">
-              <input type="number" id="in-mobil" min="0" max="500" step="1" value="0" inputmode="numeric">
-              <span>km</span>
-            </div>
-          </div>
-          <div class="baris-input">
-            <label for="in-umum">Naik angkutan umum / ojek, berapa km hari ini?</label>
-            <div class="input-satuan">
-              <input type="number" id="in-umum" min="0" max="500" step="1" value="0" inputmode="numeric">
-              <span>km</span>
-            </div>
-          </div>
-          <button type="button" class="tombol tombol-kedua tombol-lebar tombol-kecil" data-tuju="lacak" style="margin-top:14px">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21 C 7 15.5, 5 12, 5 9 A 7 7 0 0 1 19 9 C 19 12, 17 15.5, 12 21 Z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="9" r="2.5" fill="currentColor"/></svg>
-            Isi otomatis dari GPS (lacak perjalanan)
+        <fieldset class="kartu kartu-tip akordeon-karbon terbuka" id="bagian-perjalanan" aria-labelledby="judul-perjalanan">
+          <button type="button" class="tip-kepala akordeon-kepala" aria-expanded="true">
+            <span class="nomor-langkah">1</span>
+            <h4 id="judul-perjalanan">Perjalanan hari ini</h4>
+            <span class="ringkasan-akordeon" id="ringkasan-perjalanan"></span>
+            <svg class="tip-panah" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9 L12 15 L18 9" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
-        </fieldset>
-
-        <fieldset class="kartu" id="bagian-listrik">
-          <legend><span class="nomor-langkah">2</span> Listrik di rumah</legend>
-          <small class="keterangan">Ini kebiasaan bulanan — porsi seharinya (dibagi 30) yang masuk hitungan hari ini.</small>
-          <label class="pil-lewati">
-            <input type="checkbox" id="lewati-listrik">
-            <span class="cek-kotak" aria-hidden="true"></span>
-            <span>Tidak diisi — jangan hitung bagian ini</span>
-          </label>
-          <div class="baris-input isian-bagian">
-            <label for="in-listrik">Pemakaian listrik rumah sebulan</label>
-            <div class="input-satuan">
-              <input type="number" id="in-listrik" min="0" max="10000" step="1" value="55" inputmode="decimal">
-              <span>kWh/bulan</span>
-            </div>
-            <small class="keterangan">Ketik angkanya sendiri, atau pilih perkiraan dari biaya token/tagihan PLN:</small>
-            <div class="grup-preset" id="preset-listrik">
-              <button type="button" class="chip-preset" data-nilai="20">&lt; Rp 50 rb <b>≈ 20 kWh</b></button>
-              <button type="button" class="chip-preset aktif" data-nilai="55">Rp 50–100 rb <b>≈ 55 kWh</b></button>
-              <button type="button" class="chip-preset" data-nilai="110">Rp 100–200 rb <b>≈ 110 kWh</b></button>
-              <button type="button" class="chip-preset" data-nilai="200">&gt; Rp 200 rb <b>≈ 200 kWh</b></button>
-            </div>
-          </div>
-        </fieldset>
-
-        <fieldset class="kartu" id="bagian-masak">
-          <legend><span class="nomor-langkah">3</span> Memasak hari ini</legend>
-          <small class="keterangan">Isi sesuai kejadian hari ini saja.</small>
-          <label class="pil-lewati">
-            <input type="checkbox" id="lewati-masak">
-            <span class="cek-kotak" aria-hidden="true"></span>
-            <span>Tidak diisi — jangan hitung bagian ini</span>
-          </label>
-          <div class="baris-input isian-bagian">
-            <label for="in-gas-kali">Berapa kali masak pakai kompor gas (LPG) hari ini?</label>
-            <div class="input-satuan">
-              <input type="number" id="in-gas-kali" min="0" max="15" step="1" value="2" inputmode="numeric">
-              <span>kali</span>
-            </div>
-            <small class="keterangan">Ketik angkanya sendiri, atau pilih perkiraan:</small>
-            <div class="grup-preset" id="preset-gas">
-              <button type="button" class="chip-preset" data-nilai="0">Tidak masak <b>0×</b></button>
-              <button type="button" class="chip-preset aktif" data-nilai="2">Seperti biasa <b>2×</b></button>
-              <button type="button" class="chip-preset" data-nilai="4">Banyak (acara/tamu) <b>4×</b></button>
-            </div>
-          </div>
-          <div class="baris-input isian-bagian">
-            <label for="in-kayu-kali">Berapa kali masak pakai kayu bakar hari ini?</label>
-            <div class="input-satuan">
-              <input type="number" id="in-kayu-kali" min="0" max="15" step="1" value="0" inputmode="numeric">
-              <span>kali</span>
-            </div>
-            <small class="keterangan">Ketik angkanya sendiri, atau pilih perkiraan:</small>
-            <div class="grup-preset" id="preset-kayu">
-              <button type="button" class="chip-preset aktif" data-nilai="0">Tidak <b>0×</b></button>
-              <button type="button" class="chip-preset" data-nilai="1">Sesekali <b>1×</b></button>
-              <button type="button" class="chip-preset" data-nilai="3">Sering <b>3×</b></button>
+          <div class="tip-badan">
+            <div class="tip-badan-isi akordeon-isi">
+              <div class="baris-input">
+                <label for="in-motor">Naik motor, berapa km hari ini?</label>
+                <div class="input-satuan">
+                  <input type="number" id="in-motor" min="0" max="500" step="1" value="0" inputmode="numeric">
+                  <span>km</span>
+                </div>
+              </div>
+              <div class="baris-input">
+                <label for="in-mobil">Naik mobil pribadi, berapa km hari ini?</label>
+                <div class="input-satuan">
+                  <input type="number" id="in-mobil" min="0" max="500" step="1" value="0" inputmode="numeric">
+                  <span>km</span>
+                </div>
+              </div>
+              <div class="baris-input">
+                <label for="in-umum">Naik angkutan umum / ojek, berapa km hari ini?</label>
+                <div class="input-satuan">
+                  <input type="number" id="in-umum" min="0" max="500" step="1" value="0" inputmode="numeric">
+                  <span>km</span>
+                </div>
+              </div>
+              <button type="button" class="tombol tombol-kedua tombol-lebar tombol-kecil" data-tuju="lacak" style="margin-top:14px">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21 C 7 15.5, 5 12, 5 9 A 7 7 0 0 1 19 9 C 19 12, 17 15.5, 12 21 Z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="9" r="2.5" fill="currentColor"/></svg>
+                Isi otomatis dari GPS (lacak perjalanan)
+              </button>
             </div>
           </div>
         </fieldset>
 
-        <fieldset class="kartu" id="bagian-makan">
-          <legend><span class="nomor-langkah">4</span> Pola makan hari ini</legend>
-          <small class="keterangan">Isi sesuai yang benar-benar dimakan hari ini.</small>
-          <label class="pil-lewati">
-            <input type="checkbox" id="lewati-makan">
-            <span class="cek-kotak" aria-hidden="true"></span>
-            <span>Tidak diisi — jangan hitung bagian ini</span>
-          </label>
-          <div class="baris-input isian-bagian">
-            <span class="label-radio">Centang yang dimakan hari ini (boleh lebih dari satu)</span>
-            <div class="grup-radio" role="group" aria-label="Makanan hari ini">
-              <label class="pil-radio"><input type="checkbox" id="makan-daging-merah" value="2.2"><span>Daging merah (sapi/kambing)</span></label>
-              <label class="pil-radio"><input type="checkbox" id="makan-ayam" value="0.5"><span>Ayam</span></label>
-              <label class="pil-radio"><input type="checkbox" id="makan-ikan" value="0.4"><span>Ikan</span></label>
-              <label class="pil-radio"><input type="checkbox" id="makan-sayur" value="0.3"><span>Sayur / menu nabati</span></label>
+        <fieldset class="kartu kartu-tip akordeon-karbon" id="bagian-listrik" aria-labelledby="judul-listrik">
+          <button type="button" class="tip-kepala akordeon-kepala" aria-expanded="false">
+            <span class="nomor-langkah">2</span>
+            <h4 id="judul-listrik">Listrik di rumah</h4>
+            <span class="ringkasan-akordeon" id="ringkasan-listrik"></span>
+            <svg class="tip-panah" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9 L12 15 L18 9" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="tip-badan">
+            <div class="tip-badan-isi akordeon-isi">
+              <small class="keterangan">Ini kebiasaan bulanan — porsi seharinya (dibagi 30) yang masuk hitungan hari ini.</small>
+              <label class="pil-lewati">
+                <input type="checkbox" id="lewati-listrik">
+                <span class="cek-kotak" aria-hidden="true"></span>
+                <span>Tidak diisi — jangan hitung bagian ini</span>
+              </label>
+              <div class="baris-input isian-bagian">
+                <label for="in-listrik">Pemakaian listrik rumah sebulan</label>
+                <div class="input-satuan">
+                  <input type="number" id="in-listrik" min="0" max="10000" step="1" value="55" inputmode="decimal">
+                  <span>kWh/bulan</span>
+                </div>
+                <small class="keterangan">Ketik angkanya sendiri, atau pilih perkiraan dari biaya token/tagihan PLN:</small>
+                <div class="grup-preset" id="preset-listrik">
+                  <button type="button" class="chip-preset" data-nilai="20">&lt; Rp 50 rb <b>≈ 20 kWh</b></button>
+                  <button type="button" class="chip-preset aktif" data-nilai="55">Rp 50–100 rb <b>≈ 55 kWh</b></button>
+                  <button type="button" class="chip-preset" data-nilai="110">Rp 100–200 rb <b>≈ 110 kWh</b></button>
+                  <button type="button" class="chip-preset" data-nilai="200">&gt; Rp 200 rb <b>≈ 200 kWh</b></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="kartu kartu-tip akordeon-karbon" id="bagian-masak" aria-labelledby="judul-masak">
+          <button type="button" class="tip-kepala akordeon-kepala" aria-expanded="false">
+            <span class="nomor-langkah">3</span>
+            <h4 id="judul-masak">Memasak hari ini</h4>
+            <span class="ringkasan-akordeon" id="ringkasan-masak"></span>
+            <svg class="tip-panah" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9 L12 15 L18 9" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="tip-badan">
+            <div class="tip-badan-isi akordeon-isi">
+              <small class="keterangan">Isi sesuai kejadian hari ini saja.</small>
+              <label class="pil-lewati">
+                <input type="checkbox" id="lewati-masak">
+                <span class="cek-kotak" aria-hidden="true"></span>
+                <span>Tidak diisi — jangan hitung bagian ini</span>
+              </label>
+              <div class="baris-input isian-bagian">
+                <label for="in-gas-kali">Berapa kali masak pakai kompor gas (LPG) hari ini?</label>
+                <div class="input-satuan">
+                  <input type="number" id="in-gas-kali" min="0" max="15" step="1" value="2" inputmode="numeric">
+                  <span>kali</span>
+                </div>
+                <small class="keterangan">Ketik angkanya sendiri, atau pilih perkiraan:</small>
+                <div class="grup-preset" id="preset-gas">
+                  <button type="button" class="chip-preset" data-nilai="0">Tidak masak <b>0×</b></button>
+                  <button type="button" class="chip-preset aktif" data-nilai="2">Seperti biasa <b>2×</b></button>
+                  <button type="button" class="chip-preset" data-nilai="4">Banyak (acara/tamu) <b>4×</b></button>
+                </div>
+              </div>
+              <div class="baris-input isian-bagian">
+                <label for="in-kayu-kali">Berapa kali masak pakai kayu bakar hari ini?</label>
+                <div class="input-satuan">
+                  <input type="number" id="in-kayu-kali" min="0" max="15" step="1" value="0" inputmode="numeric">
+                  <span>kali</span>
+                </div>
+                <small class="keterangan">Ketik angkanya sendiri, atau pilih perkiraan:</small>
+                <div class="grup-preset" id="preset-kayu">
+                  <button type="button" class="chip-preset aktif" data-nilai="0">Tidak <b>0×</b></button>
+                  <button type="button" class="chip-preset" data-nilai="1">Sesekali <b>1×</b></button>
+                  <button type="button" class="chip-preset" data-nilai="3">Sering <b>3×</b></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="kartu kartu-tip akordeon-karbon" id="bagian-makan" aria-labelledby="judul-makan">
+          <button type="button" class="tip-kepala akordeon-kepala" aria-expanded="false">
+            <span class="nomor-langkah">4</span>
+            <h4 id="judul-makan">Pola makan hari ini</h4>
+            <span class="ringkasan-akordeon" id="ringkasan-makan"></span>
+            <svg class="tip-panah" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9 L12 15 L18 9" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="tip-badan">
+            <div class="tip-badan-isi akordeon-isi">
+              <small class="keterangan">Isi sesuai yang benar-benar dimakan hari ini.</small>
+              <label class="pil-lewati">
+                <input type="checkbox" id="lewati-makan">
+                <span class="cek-kotak" aria-hidden="true"></span>
+                <span>Tidak diisi — jangan hitung bagian ini</span>
+              </label>
+              <div class="baris-input isian-bagian">
+                <span class="label-radio">Centang yang dimakan hari ini (boleh lebih dari satu)</span>
+                <div class="grup-radio" role="group" aria-label="Makanan hari ini">
+                  <label class="pil-radio"><input type="checkbox" id="makan-daging-merah" value="2.2"><span>Daging merah (sapi/kambing)</span></label>
+                  <label class="pil-radio"><input type="checkbox" id="makan-ayam" value="0.5"><span>Ayam</span></label>
+                  <label class="pil-radio"><input type="checkbox" id="makan-ikan" value="0.4"><span>Ikan</span></label>
+                  <label class="pil-radio"><input type="checkbox" id="makan-sayur" value="0.3"><span>Sayur / menu nabati</span></label>
+                </div>
+              </div>
             </div>
           </div>
         </fieldset>
@@ -456,16 +501,6 @@
       <div class="kartu kartu-info">
         <h3>Mulai dari memilah di rumah</h3>
         <p>Sediakan minimal <b>tiga wadah</b>: satu untuk <b>sampah organik</b> (sisa dapur &amp; kebun), satu untuk <b>yang bisa dijual</b> (plastik, kertas, kaca, logam), dan satu untuk <b>sisa/residu</b>. Dari sini, semua jadi lebih mudah — dan lebih bernilai.</p>
-      </div>
-
-      <div class="baris-chip" id="filter-sampah" role="tablist" aria-label="Saring berdasarkan jenis sampah">
-        <button class="chip aktif" data-kategori="semua">Semua</button>
-        <button class="chip" data-kategori="organik">🍂 Organik</button>
-        <button class="chip" data-kategori="plastik">🛍️ Plastik</button>
-        <button class="chip" data-kategori="kertas">📦 Kertas</button>
-        <button class="chip" data-kategori="kaca">🥫 Kaca &amp; Logam</button>
-        <button class="chip" data-kategori="b3">⚠️ Berbahaya (B3)</button>
-        <button class="chip" data-kategori="residu">🗑️ Residu</button>
       </div>
 
       <div class="undak undak-b">
@@ -562,21 +597,17 @@
         </div>
       </form>
 
-      <div class="undak undak-b">
-        <h3 class="judul-bagian">Hari ini</h3>
-        <div id="jadwal-hari-ini"></div>
-        <h3 class="judul-bagian">Mendatang</h3>
-        <div id="jadwal-mendatang"></div>
-        <h3 class="judul-bagian">Lewat &amp; selesai</h3>
-        <div id="jadwal-lewat"></div>
+      <div class="banner-jadwal" id="banner-kalender">
+        <span class="banner-ikon" aria-hidden="true">🌱</span>
+        <span class="banner-teks">Bingung mulai dari mana? Lihat <b>Kalender Tanam</b> untuk bulan terbaik menanam.</span>
+        <button type="button" class="tombol tombol-kedua tombol-kecil banner-aksi" data-tuju="kalender">Buka</button>
+        <button type="button" class="banner-tutup" id="tutup-banner-kalender" aria-label="Tutup, jangan tampilkan lagi">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6 L18 18 M18 6 L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+        </button>
       </div>
 
-      <div class="undak undak-c">
-        <div class="kartu">
-          <h3>Bingung mulai dari mana?</h3>
-          <p>Lihat <b>Kalender Tanam</b> untuk tahu bulan terbaik menanam jagung, padi, jati, dan jambu mete — lalu salin ke jadwal Anda dengan satu ketukan.</p>
-          <button type="button" class="tombol tombol-kedua tombol-kecil" data-tuju="kalender" style="margin-top:10px">Buka Kalender Tanam</button>
-        </div>
+      <div class="undak undak-b">
+        <div id="jadwal-daftar"></div>
       </div>
     </section>
 
