@@ -312,33 +312,31 @@
 
     html += htmlBanner(analisisEkstrem(data));
 
-    // ----- Kartu utama -----
+    // ----- Hero (tata letak gaya iOS, warna tetap palet aplikasi) -----
+    var hariIni = data.harian[0];
+    var hlHtml = hariIni
+      ? '<div class="cuaca-hl"><span>Tertinggi <b>' + Math.round(hariIni.tMax) + '°</b></span>' +
+        '<span>Terendah <b>' + Math.round(hariIni.tMin) + '°</b></span></div>'
+      : '';
     html += '<div class="kartu kartu-cuaca-utama">' +
-      '<div class="cuaca-lokasi">' + (lok.desa || 'Galung Maloang') +
-        (lok.kecamatan ? ', ' + lok.kecamatan : '') + '</div>' +
-      '<div class="cuaca-atas">' +
-        ikonSVG(c.weather, malam, 'ikon-cuaca-besar') +
-        '<div class="cuaca-suhu-blok">' +
-          '<div class="cuaca-suhu">' + Math.round(c.t) + '°<span>C</span></div>' +
-          '<div class="cuaca-desk">' + (c.weather_desc || teksKode(c.weather)) + '</div>' +
-        '</div>' +
+      '<div class="cuaca-lokasi">' +
+        '<svg class="ikon-pin" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21 C 7 15.5, 5 12, 5 9 A 7 7 0 0 1 19 9 C 19 12, 17 15.5, 12 21 Z" fill="none" stroke="currentColor" stroke-width="1.9"/><circle cx="12" cy="9" r="2.4" fill="currentColor"/></svg>' +
+        (lok.desa || 'Galung Maloang') + (lok.kecamatan ? ', ' + lok.kecamatan : '') +
       '</div>' +
-      '<div class="cuaca-detail">' +
-        '<span title="Kelembapan udara">💧 Lembap ' + c.hu + '%</span>' +
-        '<span title="Angin">🍃 ' + Math.round(c.ws) + ' km/j' + (arahAngin(c.wd) ? ' ' + arahAngin(c.wd) : '') + '</span>' +
-        '<span title="Tutupan awan">☁️ Awan ' + c.tcc + '%</span>' +
-      '</div>' +
-      '<div class="cuaca-jam-ambil">Kondisi pukul ' + jamDari(c.local_datetime) + ' WITA</div>' +
+      ikonSVG(c.weather, malam, 'ikon-cuaca-besar') +
+      '<div class="cuaca-suhu">' + Math.round(c.t) + '°</div>' +
+      '<div class="cuaca-desk">' + (c.weather_desc || teksKode(c.weather)) + '</div>' +
+      hlHtml +
     '</div>';
 
-    // ----- Info petani -----
-    var int0 = data.harian[0] ? tingkatHujan(data.harian[0].weather, data.harian[0].tpMax) : 0;
-    var int1 = data.harian[1] ? tingkatHujan(data.harian[1].weather, data.harian[1].tpMax) : 0;
-    html += '<div class="kartu saran-tani"><h3>Info untuk petani</h3><p>' + saranTani(int0, int1) + '</p></div>';
-
-    // ----- Prakiraan per jam -----
+    // ----- Ringkasan singkat + prakiraan per jam (satu kartu, gaya iOS) -----
+    var ringkasKalimat = 'Angin hingga ' + Math.round(c.ws) + ' km/j' +
+      (arahAngin(c.wd) ? ' dari ' + arahAngin(c.wd).toLowerCase() : '') +
+      ', kelembapan ' + c.hu + '%, tutupan awan ' + c.tcc + '%.';
     if (data.jam && data.jam.length) {
-      html += '<h3 class="judul-bagian">Per 3 jam</h3><div class="strip-jam">';
+      html += '<div class="kartu kartu-jam">' +
+        '<p class="cuaca-ringkas">' + ringkasKalimat + '</p>' +
+        '<div class="strip-jam">';
       data.jam.forEach(function (j, idx) {
         var mlm = malamDari(j.local_datetime);
         html += '<div class="jam-item' + (idx === 0 ? ' jam-kini' : '') + '">' +
@@ -348,25 +346,46 @@
           '<span class="jam-hujan">' + (j.tp > 0 ? '💧' + j.tp + 'mm' : '—') + '</span>' +
         '</div>';
       });
-      html += '</div>';
+      html += '</div></div>';
     }
 
-    // ----- Prakiraan 3 hari -----
-    html += '<h3 class="judul-bagian">Prakiraan 3 hari</h3>' +
+    // ----- Info petani -----
+    var int0 = data.harian[0] ? tingkatHujan(data.harian[0].weather, data.harian[0].tpMax) : 0;
+    var int1 = data.harian[1] ? tingkatHujan(data.harian[1].weather, data.harian[1].tpMax) : 0;
+    html += '<div class="kartu saran-tani"><h3>Info untuk petani</h3><p>' + saranTani(int0, int1) + '</p></div>';
+
+    // ----- Prakiraan harian dengan batang rentang suhu (gaya iOS) -----
+    // Rentang suhu global (semua hari) untuk memosisikan batang tiap hari.
+    var gMin = Infinity, gMax = -Infinity;
+    data.harian.forEach(function (h) {
+      if (h.tMin < gMin) gMin = h.tMin;
+      if (h.tMax > gMax) gMax = h.tMax;
+    });
+    var rentang = Math.max(1, gMax - gMin);
+
+    html += '<h3 class="judul-bagian">Prakiraan ' + data.harian.length + ' hari</h3>' +
       '<p class="keterangan keterangan-tengah">👆 Ketuk salah satu hari untuk saran tani</p>' +
-      '<div class="grid-harian">';
+      '<div class="kartu kartu-harian">';
     var namaHari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
     var labelHari = ['Hari ini', 'Besok', 'Lusa'];
     data.harian.forEach(function (h, i) {
       var tgl = new Date(h.tanggal + 'T00:00:00');
-      var mlm = false; // ikon harian pakai versi siang
       var intensitas = tingkatHujan(h.weather, h.tpMax);
+      var lebar = Math.max(14, Math.round((h.tMax - h.tMin) / rentang * 100));
+      var kiri = Math.round((h.tMin - gMin) / rentang * 100);
+      if (kiri + lebar > 100) kiri = 100 - lebar;
+      var hujanIkon = h.tpMax > 0
+        ? '<span class="hari-hujan-ikon">💧</span>'
+        : '<span class="hari-hujan-ikon kosong">💧</span>';
       html += '<div class="baris-hari" role="button" tabindex="0" aria-expanded="false">' +
-        '<span class="hari-nama">' + (labelHari[i] || namaHari[tgl.getDay()]) +
-          '<small>' + tgl.getDate() + '/' + (tgl.getMonth() + 1) + '</small></span>' +
-        ikonSVG(h.weather, mlm, 'ikon-cuaca-mini hari-ikon-svg') +
-        chipHujan(intensitas, h.tpMax) +
-        '<span class="hari-suhu">' + Math.round(h.tMax) + '° <small>/ ' + Math.round(h.tMin) + '°</small></span>' +
+        '<div class="hari-atas">' +
+          '<span class="hari-nama">' + (labelHari[i] || namaHari[tgl.getDay()]) + '</span>' +
+          ikonSVG(h.weather, false, 'ikon-cuaca-mini hari-ikon-svg') +
+          hujanIkon +
+          '<span class="hari-suhu-min">' + Math.round(h.tMin) + '°</span>' +
+          '<div class="hari-batang"><div class="hari-batang-isi" style="left:' + kiri + '%;width:' + lebar + '%"></div></div>' +
+          '<span class="hari-suhu-maks">' + Math.round(h.tMax) + '°</span>' +
+        '</div>' +
         '<div class="hari-detail"><div class="hari-detail-isi">' +
           '<b>' + (h.weather_desc || teksKode(h.weather)) + '</b> · lembap ' + h.huAvg + '%, angin ' + h.wsMax + ' km/j.<br>' +
           saranHarian(intensitas) +

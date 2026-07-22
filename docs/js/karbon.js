@@ -456,6 +456,68 @@
     });
   });
 
+  /* ---------- Akordeon 4 seksi (hanya satu terbuka sekaligus) ----------
+     Reuse pola .kartu-tip/.tip-kepala/.tip-badan yang sudah ada;
+     seksi tertutup menampilkan ringkasan satu baris dari isiannya. */
+  var DAFTAR_AKORDEON = ['bagian-perjalanan', 'bagian-listrik', 'bagian-masak', 'bagian-makan'];
+
+  function bukaAkordeon(idTarget) {
+    DAFTAR_AKORDEON.forEach(function (id) {
+      var fs = document.getElementById(id);
+      if (!fs) return;
+      var terbuka = id === idTarget ? !fs.classList.contains('terbuka') : false;
+      fs.classList.toggle('terbuka', terbuka);
+      var tombol = fs.querySelector('.akordeon-kepala');
+      if (tombol) tombol.setAttribute('aria-expanded', terbuka);
+    });
+  }
+
+  form.addEventListener('click', function (e) {
+    var tombol = e.target.closest('.akordeon-kepala');
+    if (!tombol) return;
+    var fs = tombol.closest('fieldset');
+    if (fs) bukaAkordeon(fs.id);
+  });
+
+  function ringkasPerjalanan() {
+    var km = (parseFloat(document.getElementById('in-motor').value) || 0) +
+      (parseFloat(document.getElementById('in-mobil').value) || 0) +
+      (parseFloat(document.getElementById('in-umum').value) || 0);
+    return km > 0 ? km + ' km hari ini' : 'Belum ada perjalanan';
+  }
+  function ringkasListrik() {
+    if (document.getElementById('lewati-listrik').checked) return 'Tidak diisi';
+    var kwh = document.getElementById('in-listrik').value || 0;
+    return kwh + ' kWh/bulan';
+  }
+  function ringkasMasak() {
+    if (document.getElementById('lewati-masak').checked) return 'Tidak diisi';
+    var gas = document.getElementById('in-gas-kali').value || 0;
+    var kayu = document.getElementById('in-kayu-kali').value || 0;
+    if (gas == 0 && kayu == 0) return 'Tidak masak hari ini';
+    var bagian = [];
+    if (gas > 0) bagian.push('Gas ' + gas + '×');
+    if (kayu > 0) bagian.push('Kayu ' + kayu + '×');
+    return bagian.join(', ');
+  }
+  function ringkasMakan() {
+    if (document.getElementById('lewati-makan').checked) return 'Tidak diisi';
+    var LABEL = { 'makan-daging-merah': 'Daging merah', 'makan-ayam': 'Ayam', 'makan-ikan': 'Ikan', 'makan-sayur': 'Sayur' };
+    var dipilih = DAFTAR_MAKAN.filter(function (id) {
+      var el = document.getElementById(id);
+      return el && el.checked;
+    }).map(function (id) { return LABEL[id]; });
+    return dipilih.length ? dipilih.join(', ') : 'Belum dipilih';
+  }
+
+  function perbaruiRingkasanAkordeon() {
+    var el;
+    if ((el = document.getElementById('ringkasan-perjalanan'))) el.textContent = ringkasPerjalanan();
+    if ((el = document.getElementById('ringkasan-listrik'))) el.textContent = ringkasListrik();
+    if ((el = document.getElementById('ringkasan-masak'))) el.textContent = ringkasMasak();
+    if ((el = document.getElementById('ringkasan-makan'))) el.textContent = ringkasMakan();
+  }
+
   /* ---------- Saklar "tidak diisi" per bagian ---------- */
   var DAFTAR_LEWATI = [
     ['lewati-listrik', 'bagian-listrik'],
@@ -485,11 +547,13 @@
   form.addEventListener('input', function () {
     perbaruiLewati();
     tandaiPresetAktif();
+    perbaruiRingkasanAkordeon();
     hitungLangsung();
   });
   form.addEventListener('change', function () {
     perbaruiLewati();
     tandaiPresetAktif();
+    perbaruiRingkasanAkordeon();
     hitungLangsung();
   });
 
@@ -563,5 +627,6 @@
   gambarRiwayat();
   gambarLaporan();
   perbaruiLewati();
+  perbaruiRingkasanAkordeon();
   hitungLangsung(); // hasil langsung tampil sejak halaman dibuka
 })();

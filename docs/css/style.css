@@ -64,9 +64,9 @@ body {
     radial-gradient(circle at 100% 0%, rgba(212, 166, 42, 0.08), transparent 320px);
   background-repeat: repeat, no-repeat;
   color: var(--teks);
-  font-size: 17px;                /* besar — ramah lansia & HP kecil */
-  line-height: 1.6;
-  padding-bottom: 96px;           /* ruang nav bawah + rumputnya */
+  font-size: 16px;                /* cukup besar untuk lansia, tapi lebih ringkas di layar HP */
+  line-height: 1.5;
+  padding-bottom: 92px;           /* ruang nav bawah + rumputnya */
   min-height: 100dvh;
 }
 
@@ -190,7 +190,7 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: var(-
 #isi-utama {
   max-width: 580px;
   margin: 0 auto;
-  padding: 18px 14px 26px;
+  padding: 14px 13px 22px;
 }
 
 .view { display: none; animation: muncul 0.25s ease; }
@@ -203,8 +203,8 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: var(-
 /* ---- Undakan terasering: pita bertingkat dengan tepi berumput ---- */
 .undak {
   position: relative;
-  margin: 34px -14px 0;
-  padding: 30px 16px 26px 16px;
+  margin: 26px -14px 0;
+  padding: 24px 16px 20px 16px;
 }
 .undak::before {                      /* rumput di bibir undakan */
   content: "";
@@ -241,10 +241,10 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: var(-
   /* sudut sedikit tak beraturan — kesan dipotong tangan */
   border-radius: 22px 26px 19px 24px / 24px 20px 26px 21px;
   box-shadow: var(--bayang);
-  padding: 16px;
-  margin-bottom: 14px;
+  padding: 13px;
+  margin-bottom: 11px;
 }
-.kartu h3 { color: var(--hijau-jati); margin-bottom: 6px; font-size: 1.12rem; }
+.kartu h3 { color: var(--hijau-jati); margin-bottom: 5px; font-size: 1.1rem; }
 .kartu-tengah { text-align: center; color: var(--teks-samar); }
 
 .judul-bagian {
@@ -439,9 +439,9 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: var(-
 .kepala-halaman {
   position: relative;
   border-radius: var(--radius) var(--radius) 46% 54% / var(--radius) var(--radius) 24px 30px;
-  padding: 20px 18px 26px;
+  padding: 16px 16px 21px;
   color: #fff;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
   overflow: hidden;
 }
 .kepala-halaman h2, .kepala-halaman p { position: relative; }
@@ -633,6 +633,25 @@ fieldset.terlewati .pil-lewati { background: var(--tanah-pucat); color: #543A26;
   font-variant-numeric: tabular-nums;
 }
 .sticky-emisi-satuan { font-size: 0.78rem; color: var(--teks-samar); }
+
+/* ============ AKORDEON (Kalkulator Karbon) ============
+   Pakai ulang pola .kartu-tip/.tip-kepala/.tip-badan yang
+   sudah ada di Tips & FAQ, dipasang pada <fieldset>. */
+fieldset.akordeon-karbon { border: 1px solid var(--garis); }
+fieldset.akordeon-karbon .tip-kepala { width: 100%; }
+fieldset.akordeon-karbon .tip-badan-isi { padding: 0 16px 16px; }
+fieldset.akordeon-karbon.terbuka .tip-badan { max-height: 1000px; }  /* seksi Memasak cukup panjang */
+.akordeon-kepala .nomor-langkah { flex: none; }
+.akordeon-kepala h4 {
+  flex: 1; text-align: left;
+  color: var(--hijau-jati); font-size: 1.02rem;
+}
+.ringkasan-akordeon {
+  flex: none; max-width: 38%;
+  font-size: 0.78rem; font-weight: 700; color: var(--teks-samar);
+  text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+fieldset.akordeon-karbon.terbuka .ringkasan-akordeon { display: none; }
 
 /* Laporan bulanan — collapsible, tertutup bawaan (rincian/tips hasil kini selalu tampil) */
 .hasil-akordeon .tip-kepala h4 { flex: 1; text-align: left; }
@@ -840,27 +859,37 @@ fieldset.terlewati .pil-lewati { background: var(--tanah-pucat); color: #543A26;
   background: rgba(255,255,255,0.13);
   border-radius: 45% 55% 60% 40% / 50% 45% 55% 50%;
 }
+.kartu-cuaca-utama { text-align: center; }
 .cuaca-lokasi {
-  position: relative; font-weight: 800; font-size: 0.9rem;
-  opacity: 0.92; margin-bottom: 8px;
+  position: relative; font-weight: 800; font-size: 0.92rem;
+  opacity: 0.95; margin-bottom: 4px;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
 }
-.cuaca-atas { position: relative; display: flex; align-items: center; gap: 12px; }
-.cuaca-suhu-blok { flex: 1; min-width: 0; }
-.cuaca-suhu { font-family: var(--font-judul); font-size: 3.4rem; line-height: 1; font-variant-numeric: tabular-nums; }
-.cuaca-suhu span { font-family: var(--font-badan); font-size: 1.25rem; font-weight: 700; margin-left: 2px; opacity: 0.85; }
-.cuaca-desk { font-size: 1.05rem; font-weight: 700; margin-top: 2px; }
-.cuaca-detail {
+.ikon-pin { width: 15px; height: 15px; flex: none; }
+.cuaca-suhu {
   position: relative;
-  display: flex; gap: 8px; flex-wrap: wrap;
-  margin-top: 14px; font-size: 0.82rem;
+  font-family: var(--font-judul); font-size: 4rem; line-height: 1.02;
+  font-variant-numeric: tabular-nums;
 }
-.cuaca-detail span { background: rgba(255,255,255,0.16); padding: 5px 12px; border-radius: 999px; }
-.cuaca-jam-ambil { position: relative; margin-top: 10px; font-size: 0.76rem; opacity: 0.82; }
+.cuaca-desk { position: relative; font-size: 1.05rem; font-weight: 700; margin-top: 2px; }
+.cuaca-hl {
+  position: relative; display: flex; justify-content: center; gap: 18px;
+  margin-top: 7px; font-size: 0.88rem; opacity: 0.94;
+}
+.cuaca-hl b { font-weight: 800; }
+
+/* Ringkasan singkat + strip per jam (satu kartu) */
+.kartu-jam { padding-top: 12px; }
+.cuaca-ringkas {
+  font-size: 0.86rem; color: var(--teks-lembut);
+  margin-bottom: 10px; padding-bottom: 10px;
+  border-bottom: 1px solid var(--garis);
+}
 
 /* Ikon cuaca SVG (offline, palet aplikasi) */
 .ikon-cuaca { display: block; }
-.ikon-cuaca-besar { width: 94px; height: auto; flex: none; }
-.ikon-cuaca-mini { width: 42px; height: auto; }
+.ikon-cuaca-besar { width: 92px; height: auto; margin: 2px auto 0; }
+.ikon-cuaca-mini { width: 40px; height: auto; }
 
 /* Strip prakiraan per jam */
 .strip-jam {
@@ -898,42 +927,45 @@ fieldset.terlewati .pil-lewati { background: var(--tanah-pucat); color: #543A26;
 }
 .saran-tani h3 { color: #3A5563; }
 
-.grid-harian { display: grid; grid-template-columns: 1fr; gap: 8px; }
+/* Prakiraan harian gaya iOS: nama · ikon · hujan · min [batang rentang] maks.
+   Baris memakai flex-wrap agar detail (saran tani) turun ke bawah saat dibuka. */
+.kartu-harian { padding: 2px 13px; }
 .baris-hari {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 40px auto auto;
-  align-items: center; gap: 8px;
-  background: var(--permukaan);
-  border: 1px solid rgba(92, 122, 138, 0.35);
-  border-radius: var(--radius-kecil);
-  padding: 11px 12px;
-  min-height: 56px;
+  padding: 11px 2px;
+  border-bottom: 1px solid var(--garis);
   font-size: 0.92rem;
   cursor: pointer;
 }
-.baris-hari.terbuka {
-  border-color: var(--biru-hujan);
-  box-shadow: 0 2px 10px rgba(92, 122, 138, 0.25);
+.hari-atas { display: flex; align-items: center; gap: 8px; }
+.kartu-harian .baris-hari:last-of-type { border-bottom: none; }
+.baris-hari .hari-nama { flex: none; width: 58px; font-weight: 800; }
+.baris-hari .hari-ikon-svg { width: 28px; flex: none; }
+.hari-hujan-ikon { flex: none; width: 22px; text-align: center; font-size: 0.85rem; }
+.hari-hujan-ikon.kosong { visibility: hidden; }
+.hari-suhu-min { flex: none; width: 28px; text-align: right; font-weight: 800; color: var(--teks-samar); font-variant-numeric: tabular-nums; }
+.hari-suhu-maks { flex: none; width: 28px; text-align: left; font-weight: 800; font-variant-numeric: tabular-nums; }
+.hari-batang {
+  flex: 1; min-width: 46px; height: 6px;
+  background: var(--tanah-pucat); border-radius: 999px; position: relative;
+}
+.hari-batang-isi {
+  position: absolute; top: 0; height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--hijau-muda-jagung), var(--kuning-jagung) 60%, #D98C2B);
 }
 .hari-detail {
-  grid-column: 1 / -1;
   max-height: 0; overflow: hidden;
   transition: max-height 0.3s ease;
 }
-.baris-hari.terbuka .hari-detail { max-height: 170px; }
+.baris-hari.terbuka .hari-detail { max-height: 180px; }
 .hari-detail-isi {
-  margin-top: 8px;
-  border-top: 1px dashed rgba(92, 122, 138, 0.5);
+  margin-top: 2px;
+  border-top: 1px dashed var(--garis);
   padding-top: 8px;
-  font-size: 0.87rem;
+  font-size: 0.86rem;
 }
 .hari-detail-isi b { color: #3A5563; }
 .keterangan-tengah { text-align: center; margin: -4px 0 10px; }
-.baris-hari .hari-nama { font-weight: 800; }
-.baris-hari .hari-nama small { display: block; font-weight: 400; color: var(--teks-samar); font-size: 0.78rem; }
-.baris-hari .hari-ikon-svg { width: 36px; justify-self: center; }
-.baris-hari .hari-suhu { font-weight: 800; white-space: nowrap; font-variant-numeric: tabular-nums; }
-.baris-hari .hari-suhu small { color: var(--teks-samar); font-weight: 400; }
 
 .info-pembaruan {
   text-align: center; color: var(--teks-samar);
@@ -1273,7 +1305,7 @@ fieldset.terlewati .pil-lewati { background: var(--tanah-pucat); color: #543A26;
   }
   .tombol:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(51, 71, 46, 0.25); }
   .chip:hover:not(.aktif), .chip-preset:hover:not(.aktif) { border-color: var(--hijau-muda-jagung); }
-  .baris-hari:hover { border-color: var(--biru-hujan); }
+  .baris-hari:hover .hari-nama { color: var(--biru-hujan); }
   .tip-kepala:hover h4 { color: var(--hijau-muda-jagung); }
 }
 
