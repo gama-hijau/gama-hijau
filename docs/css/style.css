@@ -156,10 +156,9 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: var(-
 }
 .pita-lembaga-teks b { display: block; font-family: var(--font-judul); font-size: 0.86rem; }
 .pita-lembaga-teks small { display: block; font-size: 0.7rem; opacity: 0.85; }
-.grup-logo-kepala { display: flex; flex: none; gap: 6px; }
 .logo-kepala {
   flex: none;
-  width: 42px; height: 42px;
+  width: 46px; height: 46px;
   display: grid; place-items: center;
   /* tanpa kotak putih — logo tampil langsung di atas kepala aplikasi */
   filter: drop-shadow(0 1px 3px rgba(0,0,0,0.35));
@@ -1553,10 +1552,6 @@ fieldset.akordeon-karbon.terbuka .ringkasan-akordeon { display: none; }
 .baris-logo-tentang .logo-cadangan { margin: 0; }
 .logo-parepare-tentang { width: 78px; height: 112px; object-fit: contain; }
 
-.kartu-podes { text-align: center; }
-.kartu-podes .logo-parepare-kelurahan { display: block; width: 70px; height: 100px; object-fit: contain; margin: 0 auto 12px; }
-.kartu-podes p { text-align: left; margin-top: 10px; }
-.kartu-podes p:first-of-type { margin-top: 0; }
 .logo-unhas {
   width: 96px; height: 112px;
   object-fit: contain;
