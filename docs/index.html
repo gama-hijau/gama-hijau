@@ -49,19 +49,25 @@
       </g>
     </svg>
 
-    <!-- Pita lembaga penyelenggara di ujung atas: logo Unhas + KKN -->
+    <!-- Pita lembaga penyelenggara di ujung atas: logo Unhas + KKN, dan Pemkot Parepare -->
     <div class="pita-lembaga">
-      <span class="logo-kepala" id="logo-kepala-unhas">
-        <img src="icons/logo-unhas.png" alt="Universitas Hasanuddin" class="logo-kepala-img">
-        <span class="logo-kepala-cadangan" aria-hidden="true">UH</span>
+      <span class="grup-logo-kepala">
+        <span class="logo-kepala" id="logo-kepala-unhas">
+          <img src="icons/logo-unhas.png" alt="Universitas Hasanuddin" class="logo-kepala-img">
+          <span class="logo-kepala-cadangan" aria-hidden="true">UH</span>
+        </span>
+        <span class="logo-kepala" id="logo-kepala-kkn">
+          <img src="icons/logo-kkn.png" alt="Logo KKN" class="logo-kepala-img">
+          <span class="logo-kepala-cadangan" aria-hidden="true">KKN</span>
+        </span>
       </span>
       <span class="pita-lembaga-teks">
         <b>KKN Tematik Perubahan Iklim</b>
         <small>Universitas Hasanuddin · Gelombang 116</small>
       </span>
-      <span class="logo-kepala" id="logo-kepala-kkn">
-        <img src="icons/logo-kkn.png" alt="Logo KKN" class="logo-kepala-img">
-        <span class="logo-kepala-cadangan" aria-hidden="true">KKN</span>
+      <span class="logo-kepala" id="logo-kepala-parepare">
+        <img src="icons/logo-parepare.png" alt="Lambang Kota Parepare" class="logo-kepala-img">
+        <span class="logo-kepala-cadangan" aria-hidden="true">PPR</span>
       </span>
     </div>
 
@@ -655,10 +661,10 @@
         <h2>Data Kelurahan</h2>
         <p>Gambaran wilayah dan data warga Kelurahan Galung Maloang.</p>
       </div>
-      <div class="kartu kartu-tengah">
-        <p style="font-size:2.2rem">📊</p>
-        <h3>Segera hadir</h3>
-        <p class="keterangan">Data lengkap kelurahan (jumlah penduduk, luas wilayah, dan info lainnya) akan ditampilkan di sini.</p>
+      <div class="kartu kartu-podes">
+        <img class="logo-parepare-kelurahan" src="icons/logo-parepare.png" alt="Lambang Kota Parepare" width="70" height="100">
+        <p>Pendataan Potensi Desa (Podes) merupakan instrumen penting yang diselenggarakan secara berkala untuk memotret realitas fisik, sosial, dan ekonomi di tingkat kewilayahan terkecil. Melalui data ini, pemerintah daerah dan pusat dapat menyusun kebijakan pembangunan yang presisi dan tepat sasaran. Kelurahan Galung Maloang, sebagai salah satu kelurahan di Kecamatan Bacukiki, Kota Parepare, memiliki dinamika kependudukan dan potensi ekonomi yang terus berkembang.</p>
+        <p>Penyusunan publikasi ini bertujuan untuk menginventarisasi kondisi terkini dari wilayah Kelurahan Galung Maloang pada tahun 2026. Data yang disajikan mencakup 8 indikator utama, mulai dari demografi penduduk, kelayakan hunian, aktivitas ekonomi mikro, kesejahteraan sosial, hingga ketersediaan utilitas dasar seperti air bersih dan listrik.</p>
       </div>
     </section>
 
@@ -693,14 +699,17 @@
       </div>
 
       <div class="kartu kartu-tentang">
-        <img id="logo-unhas" class="logo-unhas" src="icons/logo-unhas.png"
-             alt="Lambang Universitas Hasanuddin" width="96" height="112">
-        <div id="logo-unhas-cadangan" class="logo-cadangan tersembunyi" aria-hidden="true">
-          <svg viewBox="0 0 96 112">
-            <path d="M48 4 L90 20 V56 C 90 82, 72 100, 48 108 C 24 100, 6 82, 6 56 V20 Z" fill="#33472E"/>
-            <path d="M48 12 L82 25 V55 C 82 76, 68 92, 48 99 C 28 92, 14 76, 14 55 V25 Z" fill="none" stroke="#D4A62A" stroke-width="3"/>
-            <text x="48" y="66" text-anchor="middle" font-family="Georgia,serif" font-weight="bold" font-size="30" fill="#D4A62A">UH</text>
-          </svg>
+        <div class="baris-logo-tentang">
+          <img id="logo-unhas" class="logo-unhas" src="icons/logo-unhas.png"
+               alt="Lambang Universitas Hasanuddin" width="96" height="112">
+          <div id="logo-unhas-cadangan" class="logo-cadangan tersembunyi" aria-hidden="true">
+            <svg viewBox="0 0 96 112">
+              <path d="M48 4 L90 20 V56 C 90 82, 72 100, 48 108 C 24 100, 6 82, 6 56 V20 Z" fill="#33472E"/>
+              <path d="M48 12 L82 25 V55 C 82 76, 68 92, 48 99 C 28 92, 14 76, 14 55 V25 Z" fill="none" stroke="#D4A62A" stroke-width="3"/>
+              <text x="48" y="66" text-anchor="middle" font-family="Georgia,serif" font-weight="bold" font-size="30" fill="#D4A62A">UH</text>
+            </svg>
+          </div>
+          <img class="logo-parepare-tentang" src="icons/logo-parepare.png" alt="Lambang Kota Parepare" width="78" height="112">
         </div>
         <h3>KKN Tematik Perubahan Iklim</h3>
         <p class="tentang-institusi"><b>Universitas Hasanuddin</b><br>Gelombang 116</p>
