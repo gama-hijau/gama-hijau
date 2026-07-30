@@ -1,8 +1,10 @@
 # Proyek Expo terpisah (kalkulator-iklim-gm) — bukan bagian dari PWA ini
 kalkulator-iklim-gm/
 
-# Cadangan logo resolusi asli — besar, tidak dipakai aplikasi
+# Cadangan logo/gambar resolusi asli — besar, tidak dipakai aplikasi
 **/*-asli.png
+**/*-asli.jpg
+**/*-asli.jpeg
 
 # Konfigurasi lokal Claude Code
 .claude/

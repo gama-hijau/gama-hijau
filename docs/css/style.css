@@ -301,50 +301,9 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: var(-
   to   { transform: translateY(12px) rotate(12deg); }
 }
 
-/* ---- Siklus Tani: elemen tanda tangan, paling menonjol ---- */
-.kartu-siklus {
-  position: relative;
-  text-align: center;
-  border: 2px solid var(--hijau-muda-jagung);
-  background:
-    radial-gradient(circle at 50% 112%, rgba(122, 155, 63, 0.20), transparent 64%),
-    linear-gradient(180deg, rgba(92, 122, 138, 0.08), transparent 46%),
-    var(--permukaan);
-  overflow: hidden;
-}
-.kartu-siklus h3 { font-size: 1.2rem; }
-.siklus-svg {
-  width: 156px; height: 156px; margin: 2px auto 0; display: block;
-  transform-origin: 50% 92%;
-  animation: goyang 5.5s ease-in-out infinite alternate;   /* angin sepoi */
-}
-@keyframes goyang {
-  from { transform: rotate(-1.6deg); }
-  to   { transform: rotate(1.8deg); }
-}
-.siklus-svg .tumbuh {
-  transform-origin: 60px 96px;
-  animation: tumbuh 0.9s cubic-bezier(0.2, 0.8, 0.3, 1.1);
-}
-@keyframes tumbuh {
-  from { transform: scale(0.2); opacity: 0; }
-  to   { transform: none; opacity: 1; }
-}
-.siklus-tahap {
-  display: inline-block;
-  font-family: var(--font-judul);
-  font-weight: 700;
-  color: var(--hijau-jati);
-  background: var(--hijau-pucat);
-  border-radius: 999px;
-  padding: 4px 18px;
-  margin-top: 6px;
-}
-.siklus-keterangan {
-  margin-top: 8px;
-  font-size: 0.88rem;
-  color: var(--teks-samar);
-}
+/* ---- Sampul Publikasi Potensi Desa: elemen tanda tangan, paling menonjol ---- */
+.kartu-sampul-desa { padding: 0; overflow: hidden; }
+.kartu-sampul-desa img { display: block; width: 100%; height: auto; }
 
 .strip-status { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
 .kartu-mini {
@@ -1752,6 +1711,5 @@ fieldset.akordeon-karbon.terbuka .ringkasan-akordeon { display: none; }
     transition-duration: 0.01ms !important;
   }
   .anim-muncul { opacity: 1; transform: none; }
-  .siklus-svg, .daun-layang, .lacak-denyut span { animation: none; }
-  .siklus-svg .tumbuh { animation: none; }
+  .daun-layang, .lacak-denyut span { animation: none; }
 }
