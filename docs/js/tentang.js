@@ -93,9 +93,23 @@
     if (img.complete && img.naturalWidth === 0) pakaiCadangan();
   }
 
+  /* ---------- Akordeon Proker Individu ---------- */
+  function pasangAkordeonProker() {
+    var view = document.getElementById('view-tentang');
+    if (!view) return;
+    view.addEventListener('click', function (e) {
+      var kepala = e.target.closest('.kartu-tip .tip-kepala');
+      if (!kepala) return;
+      var kartu = kepala.closest('.kartu-tip');
+      var terbuka = kartu.classList.toggle('terbuka');
+      kepala.setAttribute('aria-expanded', terbuka);
+    });
+  }
+
   pasangReset();
   pasangBantuan();
   pasangLogo();
+  pasangAkordeonProker();
   perbaruiStorage();
 
   window.GamaTentang = { perbaruiStorage: perbaruiStorage };
