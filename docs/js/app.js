@@ -63,19 +63,6 @@
   window.addEventListener('offline', perbaruiStatus);
   perbaruiStatus();
 
-  /* ---------- Logo lembaga di kepala: pakai berkas resmi bila ada,
-     kalau berkasnya belum dipasang → tampilkan monogram teks ---------- */
-  (function siapkanLogoKepala() {
-    var logos = document.querySelectorAll('.pita-lembaga .logo-kepala');
-    logos.forEach(function (bungkus) {
-      var img = bungkus.querySelector('.logo-kepala-img');
-      if (!img) return;
-      function pakaiCadangan() { bungkus.classList.add('tanpa-gambar'); }
-      img.addEventListener('error', pakaiCadangan);
-      if (img.complete && img.naturalWidth === 0) pakaiCadangan();
-    });
-  })();
-
   /* ---------- Format tanggal Indonesia (dipakai fitur lain) ---------- */
   window.formatTanggal = function (tgl, denganJam) {
     var hari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];

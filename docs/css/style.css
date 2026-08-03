@@ -140,39 +140,32 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: var(-
 .kepala h1 { font-size: 1.5rem; }
 .kepala-sub { font-size: 0.8rem; opacity: 0.85; }
 
-/* ---- Pita lembaga (logo Unhas + KKN) di ujung atas ---- */
+/* ---- Pita lembaga (semua logo) di ujung atas, dikumpulkan kiri-atas ---- */
 .pita-lembaga {
   position: relative;
   z-index: 1;
-  display: flex; align-items: center; gap: 10px;
+  display: flex; flex-direction: column; gap: 8px;
   padding-bottom: 12px;
   margin-bottom: 12px;
   border-bottom: 1px solid rgba(255,255,255,0.16);
 }
+.pita-logo-baris {
+  display: flex; flex-wrap: wrap; align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+}
+.pita-logo-img {
+  height: 30px; width: auto; max-width: 100%;
+  display: block; object-fit: contain;
+  /* tanpa kotak putih — logo tampil langsung di atas kepala aplikasi */
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.35));
+}
 .pita-lembaga-teks {
-  flex: 1; min-width: 0;
   text-align: center;
   line-height: 1.2;
 }
 .pita-lembaga-teks b { display: block; font-family: var(--font-judul); font-size: 0.86rem; }
 .pita-lembaga-teks small { display: block; font-size: 0.7rem; opacity: 0.85; }
-.logo-kepala {
-  flex: none;
-  width: 46px; height: 46px;
-  display: grid; place-items: center;
-  /* tanpa kotak putih — logo tampil langsung di atas kepala aplikasi */
-  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.35));
-}
-.logo-kepala-img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
-#logo-kepala-parepare .logo-kepala-img { max-width: 80%; max-height: 80%; }  /* lambang lebih detail, dikecilkan sedikit biar pas */
-.logo-kepala-cadangan {
-  display: none;
-  font-family: var(--font-judul); font-weight: 700;
-  font-size: 0.8rem; color: var(--hijau-jati);
-  letter-spacing: 0.3px;
-}
-.logo-kepala.tanpa-gambar .logo-kepala-img { display: none; }
-.logo-kepala.tanpa-gambar .logo-kepala-cadangan { display: block; }
 
 .status-jaringan {
   display: inline-flex; align-items: center; gap: 6px;
@@ -1223,6 +1216,20 @@ fieldset.akordeon-karbon.terbuka .ringkasan-akordeon { display: none; }
   .nav-bawah { max-width: 580px; margin: 0 auto; }
 }
 
+/* ============ MODE DESKTOP (≥900px) ============
+   Murni lewat lebar layar (bukan deteksi perangkat). Konten utama
+   dan header dibatasi lebar & ditengahkan; nav bawah tetap di bawah
+   sebagai tab bar (tidak diubah jadi sidebar). */
+@media (min-width: 900px) {
+  .kepala {
+    max-width: 760px;
+    margin: 0 auto;
+    border-radius: var(--radius) var(--radius) 34px 58px / var(--radius) var(--radius) 22px 34px;
+  }
+  #isi-utama { max-width: 760px; }
+  .nav-bawah { max-width: 760px; }
+}
+
 /* ============ PRESET LISTRIK ============ */
 .grup-preset { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 .chip-preset {
@@ -1515,6 +1522,13 @@ fieldset.akordeon-karbon.terbuka .ringkasan-akordeon { display: none; }
 .baris-logo-tentang .logo-unhas,
 .baris-logo-tentang .logo-cadangan { margin: 0; }
 .logo-parepare-tentang { width: 78px; height: 112px; object-fit: contain; }
+
+/* Baris lengkap 5 logo (dipakai di Data Kelurahan) — lebih rapat, boleh melipat */
+.baris-logo-lengkap { flex-wrap: wrap; gap: 12px 14px; }
+.logo-lembaga-img {
+  height: 52px; width: auto; max-width: 100%;
+  object-fit: contain; display: block;
+}
 
 .logo-unhas {
   width: 96px; height: 112px;
