@@ -1331,6 +1331,11 @@ fieldset.akordeon-karbon.terbuka .ringkasan-akordeon { display: none; }
   #view-tentang .undak-b > .kartu:not(.kartu-tip) {
     column-span: all;
   }
+  /* Judul "Data per Tahun" harus melebar penuh di atas kedua kolom,
+     bukan cuma nangkring di atas kolom kiri saja. */
+  #view-data-kelurahan .undak-b > .judul-bagian {
+    column-span: all;
+  }
   /* Saat satu kategori sampah dipilih, tombol kembali & judul kategori
      tetap melebar penuh, kartu tipsnya yang mengalir 2 kolom. */
   #view-sampah #daftar-sampah > .baris-kembali-kategori,
