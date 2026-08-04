@@ -1338,8 +1338,18 @@ fieldset.akordeon-karbon.terbuka .ringkasan-akordeon { display: none; }
   #view-sampah #daftar-sampah > .judul-sampah {
     grid-column: 1 / -1;
   }
-  /* Kisi pilihan kategori sampah (tampilan awal #daftar-sampah) */
-  #view-sampah .kisi-kategori { grid-template-columns: repeat(6, 1fr); }
+  /* Kisi pilihan kategori sampah (tampilan awal #daftar-sampah) — wadahnya
+     sendiri cuma satu elemen di dalam grid 2-kolom #daftar-sampah, jadi
+     harus melebar penuh 2 kolom dulu baru kisi 6-kolomnya dibagi rata. */
+  #view-sampah #daftar-sampah > .kisi-kategori {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  /* ---- Cuaca: strip jam-jaman jangan cuma nempel kiri dengan sisa
+     layar kosong — kartunya dilebarkan merata mengisi baris. ---- */
+  .strip-jam { flex-wrap: wrap; overflow-x: visible; justify-content: flex-start; }
+  .jam-item { flex: 1 1 100px; width: auto; max-width: 130px; }
 }
 
 /* ============ PRESET LISTRIK ============ */
