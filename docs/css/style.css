@@ -160,6 +160,10 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: var(-
   /* tanpa kotak putih — logo tampil langsung di atas kepala aplikasi */
   filter: drop-shadow(0 1px 2px rgba(0,0,0,0.35));
 }
+/* Logo UNHAS+KKN memuat 4 elemen teks bersarang (UNIVERSITAS HASANUDDIN,
+   lambang, KKN, pita "MENGABDI UNTUK NEGERI") dalam satu lockup lebar —
+   perlu tinggi lebih besar dari logo lain supaya tulisannya tetap terbaca. */
+.pita-logo-img--unhas-kkn { height: 46px; }
 .pita-lembaga-teks {
   text-align: center;
   line-height: 1.2;
@@ -1217,17 +1221,49 @@ fieldset.akordeon-karbon.terbuka .ringkasan-akordeon { display: none; }
 }
 
 /* ============ MODE DESKTOP (≥900px) ============
-   Murni lewat lebar layar (bukan deteksi perangkat). Konten utama
-   dan header dibatasi lebar & ditengahkan; nav bawah tetap di bawah
-   sebagai tab bar (tidak diubah jadi sidebar). */
+   Murni lewat lebar layar (bukan deteksi perangkat). Di lebar ini,
+   navigasi dipindah dari tab bar melayang di bawah layar (gaya app HP)
+   menjadi navbar mendatar di bawah kepala (gaya situs web biasa):
+   body dijadikan flex column supaya .nav-bawah bisa disusun ulang lewat
+   `order` di antara header dan konten, walau urutannya di HTML tetap
+   nav-bawah di paling akhir (perlu tetap begitu untuk mobile). */
 @media (min-width: 900px) {
+  body {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 40px;
+  }
   .kepala {
+    order: 1;
+    width: 100%;
     max-width: 760px;
     margin: 0 auto;
     border-radius: var(--radius) var(--radius) 34px 58px / var(--radius) var(--radius) 22px 34px;
   }
-  #isi-utama { max-width: 760px; }
-  .nav-bawah { max-width: 760px; }
+  .nav-bawah {
+    order: 2;
+    position: static;
+    width: 100%;
+    max-width: 760px;
+    margin: 14px auto 0;
+    border-radius: var(--radius);
+    border-top: none;
+    box-shadow: 0 2px 14px rgba(38, 48, 31, 0.12);
+    padding: 6px;
+  }
+  .nav-bawah::before { display: none; }
+  .nav-tombol {
+    flex-direction: row;
+    gap: 8px;
+    max-width: none;
+    min-height: 44px;
+  }
+  #isi-utama {
+    order: 3;
+    width: 100%;
+    max-width: 760px;
+    margin-top: 18px;
+  }
 }
 
 /* ============ PRESET LISTRIK ============ */
