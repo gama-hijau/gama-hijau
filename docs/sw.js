@@ -10,7 +10,7 @@
      lewat localStorage supaya ada label waktu pembaruan.
    ============================================================ */
 
-var VERSI_CACHE = 'gama-hijau-v53';
+var VERSI_CACHE = 'gama-hijau-v54';
 var CACHE_FONT = 'gama-font-v1';
 
 var ASET_APLIKASI = [
