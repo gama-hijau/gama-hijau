@@ -446,6 +446,17 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: var(-
   text-decoration: none;
 }
 .grup-tombol-dokumen { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+
+/* ---- Sampul mini dokumen (PDF laporan tahunan) ---- */
+.sampul-dokumen { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.sampul-dokumen-ikon {
+  flex: none; width: 48px; height: 48px;
+  border-radius: 46% 54% 50% 50% / 55% 45% 55% 45%;
+  display: grid; place-items: center;
+}
+.sampul-dokumen-ikon svg { width: 28px; height: 28px; }
+.sampul-dokumen-teks b { display: block; font-family: var(--font-judul); color: var(--hijau-jati); font-size: 0.95rem; }
+.sampul-dokumen-teks small { display: block; color: var(--teks-tenang); font-size: 0.78rem; margin-top: 2px; }
 .tombol:active { transform: scale(0.97); }
 .tombol svg { width: 20px; height: 20px; flex: none; }
 .tombol-utama { background: var(--hijau-jati); color: #fff; }
