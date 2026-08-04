@@ -1283,6 +1283,13 @@ fieldset.akordeon-karbon.terbuka .ringkasan-akordeon { display: none; }
     margin-top: 18px;
   }
 
+  /* ---- Pita logo lembaga: diperbesar di desktop, ruang lebih lega ---- */
+  .pita-logo-baris { gap: 14px; }
+  .pita-logo-img { height: 46px; }
+  .pita-logo-img--unhas-kkn { height: 56px; }
+  .pita-lembaga-teks b { font-size: 1.3rem; }
+  .pita-lembaga-teks small { font-size: 1rem; }
+
   /* ---- Beranda: tetap 3 kolom (9 menu pas 3 baris genap, tidak
      menyisakan kartu sendirian di baris terakhir); kartu jadi lebih
      lega karena kolomnya lebih lebar. ---- */
