@@ -1263,13 +1263,18 @@ fieldset.akordeon-karbon.terbuka .ringkasan-akordeon { display: none; }
     border-top: none;
     box-shadow: 0 2px 14px rgba(38, 48, 31, 0.12);
     padding: 6px;
+    justify-content: center;
+    gap: 6px;
   }
   .nav-bawah::before { display: none; }
   .nav-tombol {
+    flex: none;
     flex-direction: row;
+    justify-content: center;
     gap: 8px;
     max-width: none;
     min-height: 44px;
+    padding: 10px 20px;
   }
   #isi-utama {
     order: 3;
