@@ -1249,7 +1249,7 @@ fieldset.akordeon-karbon.terbuka .ringkasan-akordeon { display: none; }
   .kepala {
     order: 1;
     width: 100%;
-    max-width: 760px;
+    max-width: 1180px;
     margin: 0 auto;
     border-radius: var(--radius) var(--radius) 34px 58px / var(--radius) var(--radius) 22px 34px;
   }
@@ -1257,7 +1257,7 @@ fieldset.akordeon-karbon.terbuka .ringkasan-akordeon { display: none; }
     order: 2;
     position: static;
     width: 100%;
-    max-width: 760px;
+    max-width: 1180px;
     margin: 14px auto 0;
     border-radius: var(--radius);
     border-top: none;
@@ -1279,9 +1279,52 @@ fieldset.akordeon-karbon.terbuka .ringkasan-akordeon { display: none; }
   #isi-utama {
     order: 3;
     width: 100%;
-    max-width: 760px;
+    max-width: 1180px;
     margin-top: 18px;
   }
+
+  /* ---- Beranda: menu jadi 4 kolom, ruang lebih kepakai ---- */
+  #view-beranda .menu-fitur { grid-template-columns: repeat(4, 1fr); gap: 14px; }
+
+  /* ---- Kartu perkenalan (kartu-tentang) tetap lebar baca nyaman,
+     supaya paragraf panjangnya tidak melebar berlebihan ---- */
+  .kartu-tentang { max-width: 760px; margin-left: auto; margin-right: auto; }
+
+  /* ---- Daftar kartu independen (akordion tahun/nama/tips/FAQ/komoditas):
+     disusun 2 kolom memakai CSS multi-column, supaya ruang lebar kepakai
+     tanpa perlu ubah HTML. Kartu judul biasa (bukan kartu-tip) dibuat
+     melebar penuh (column-span) supaya tetap jadi pemisah bagian.
+     Untuk Sampah/FAQ/Kalender, kartu-nya dirender JS ke dalam div
+     berwadah (#info-jenis-sampah dkk) — multi-column diterapkan di
+     wadah itu langsung, bukan di .undak pembungkusnya. ---- */
+  #view-data-kelurahan .undak-b,
+  #view-tentang .undak-b,
+  #view-sampah #info-jenis-sampah,
+  #view-sampah #daftar-sampah,
+  #view-faq #daftar-faq,
+  #view-kalender #daftar-komoditas {
+    column-count: 2;
+    column-gap: 16px;
+  }
+  #view-data-kelurahan .undak-b > .kartu,
+  #view-tentang .undak-b > .kartu,
+  #view-sampah #info-jenis-sampah > .kartu,
+  #view-sampah #daftar-sampah > .kartu,
+  #view-faq #daftar-faq > .kartu,
+  #view-kalender #daftar-komoditas > .kartu {
+    break-inside: avoid;
+  }
+  #view-tentang .undak-b > .kartu:not(.kartu-tip) {
+    column-span: all;
+  }
+  /* Saat satu kategori sampah dipilih, tombol kembali & judul kategori
+     tetap melebar penuh, kartu tipsnya yang mengalir 2 kolom. */
+  #view-sampah #daftar-sampah > .baris-kembali-kategori,
+  #view-sampah #daftar-sampah > .judul-sampah {
+    column-span: all;
+  }
+  /* Kisi pilihan kategori sampah (tampilan awal #daftar-sampah) */
+  #view-sampah .kisi-kategori { grid-template-columns: repeat(6, 1fr); }
 }
 
 /* ============ PRESET LISTRIK ============ */
