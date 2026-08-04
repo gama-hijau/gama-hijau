@@ -163,7 +163,7 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: var(-
 /* Logo UNHAS+KKN memuat 4 elemen teks bersarang (UNIVERSITAS HASANUDDIN,
    lambang, KKN, pita "MENGABDI UNTUK NEGERI") dalam satu lockup lebar —
    perlu tinggi lebih besar dari logo lain supaya tulisannya tetap terbaca. */
-.pita-logo-img--unhas-kkn { height: 46px; }
+.pita-logo-img--unhas-kkn { height: 36px; }
 .pita-lembaga-teks {
   text-align: center;
   line-height: 1.2;
