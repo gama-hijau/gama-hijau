@@ -1283,8 +1283,15 @@ fieldset.akordeon-karbon.terbuka .ringkasan-akordeon { display: none; }
     margin-top: 18px;
   }
 
-  /* ---- Beranda: menu jadi 4 kolom, ruang lebih kepakai ---- */
-  #view-beranda .menu-fitur { grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  /* ---- Beranda: tetap 3 kolom (9 menu pas 3 baris genap, tidak
+     menyisakan kartu sendirian di baris terakhir); kartu jadi lebih
+     lega karena kolomnya lebih lebar. ---- */
+  #view-beranda .menu-fitur { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  #view-beranda .kartu-fitur { padding: 20px 14px; }
+  #view-beranda .kartu-fitur-ikon { width: 56px; height: 56px; }
+  #view-beranda .kartu-fitur-ikon svg { width: 36px; height: 36px; }
+  #view-beranda .kartu-fitur-teks strong { font-size: 1.05rem; }
+  #view-beranda .kartu-fitur-teks small { font-size: 0.85rem; }
 
   /* ---- Kartu perkenalan (kartu-tentang) tetap lebar baca nyaman,
      supaya paragraf panjangnya tidak melebar berlebihan ---- */
