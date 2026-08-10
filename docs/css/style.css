@@ -796,7 +796,6 @@ fieldset.akordeon-karbon.terbuka .ringkasan-akordeon { display: none; }
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
-  align-items: start;                 /* tinggi kartu ikut isinya, tak dipaksa sama rata → tanpa spasi kosong */
 }
 @media (min-width: 480px) { .grid-proker { grid-template-columns: repeat(4, 1fr); gap: 10px; } }
 @media (min-width: 860px) {
@@ -807,7 +806,7 @@ fieldset.akordeon-karbon.terbuka .ringkasan-akordeon { display: none; }
   #isi-utama:has(#view-tentang.aktif .grid-proker) { max-width: 960px; }
 }
 
-.kartu-proker { padding: 7px; margin-bottom: 0; min-width: 0; }  /* cegah kolom 1fr melebar tak rata akibat tombol nowrap */
+.kartu-proker { padding: 7px; margin-bottom: 0; min-width: 0; display: flex; flex-direction: column; }  /* cegah kolom 1fr melebar tak rata akibat tombol nowrap */
 .geser {
   position: relative;
   border-radius: 12px;
@@ -816,13 +815,18 @@ fieldset.akordeon-karbon.terbuka .ringkasan-akordeon { display: none; }
   background: var(--hijau-pucat);
 }
 .geser-tunggal img { width: 100%; height: 100%; object-fit: contain; display: block; background: var(--permukaan); }
-.kartu-proker-info { padding-top: 6px; text-align: center; }
+.kartu-proker-info { padding-top: 6px; text-align: center; display: flex; flex-direction: column; flex: 1; }
 .kartu-proker-info h4 {
   color: var(--hijau-jati); font-size: 0.72rem; line-height: 1.25;
   margin-bottom: 6px; font-family: var(--font-badan); font-weight: 800;
 }
-.kartu-proker-info .grup-tombol-dokumen { justify-content: center; flex-wrap: nowrap; gap: 4px; margin-top: 0; }
-.kartu-proker-info .tombol-kecil { padding: 5px 6px; min-height: 26px; font-size: 0.62rem; gap: 2px; white-space: nowrap; width: 50%; justify-content: center; }
+.kartu-proker-info .grup-tombol-dokumen,
+.kartu-proker-info > .keterangan { margin-top: auto; }
+.kartu-proker-info .grup-tombol-dokumen { justify-content: center; flex-wrap: nowrap; gap: 4px; padding-top: 4px; }
+.kartu-proker-info .tombol-kecil {
+  padding: 5px 6px; min-height: 26px; font-size: 0.62rem; gap: 2px;
+  white-space: nowrap; overflow: hidden; width: 50%; justify-content: center;
+}
 .kartu-proker-info .tombol svg { width: 12px; height: 12px; }
 .kartu-proker-tunggal .kartu-proker-info .keterangan { display: block; margin-top: 2px; font-size: 0.68rem; }
 
