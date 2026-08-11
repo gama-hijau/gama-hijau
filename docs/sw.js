@@ -10,7 +10,7 @@
      lewat localStorage supaya ada label waktu pembaruan.
    ============================================================ */
 
-var VERSI_CACHE = 'gama-hijau-v67';
+var VERSI_CACHE = 'gama-hijau-v70';
 var CACHE_FONT = 'gama-font-v1';
 
 var ASET_APLIKASI = [
@@ -33,7 +33,6 @@ var ASET_APLIKASI = [
   'js/lencana.js',
   'js/faq.js',
   'js/tentang.js',
-  'js/data-kelurahan.js',
   'js/onboarding.js',
   'icons/icon-192.png',
   'icons/icon-512.png',
